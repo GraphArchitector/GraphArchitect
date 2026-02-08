@@ -296,7 +296,7 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 
 ## Лицензия
 
-[Specify license]
+[Apache 2.0](https://github.com/GraphArchitector/GraphArchitect/blob/main/LICENSE)
 
 ---
 
