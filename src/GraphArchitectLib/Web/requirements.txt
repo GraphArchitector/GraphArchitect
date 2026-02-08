@@ -1,0 +1,74 @@
+# ==================== Основные зависимости Web API ====================
+
+# FastAPI и ASGI сервер
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# WebSocket
+python-socketio>=5.10.0
+aiofiles>=23.2.0
+
+# Валидация данных
+pydantic>=2.5.0
+
+# ==================== GraphArchitect (ОБЯЗАТЕЛЬНО) ====================
+
+# GraphArchitect устанавливается как локальный пакет:
+# cd ../
+# pip install -e grapharchitect/
+# 
+# Или добавить путь в PYTHONPATH
+
+# ==================== Эмбеддинги и k-NN ====================
+
+# FAISS для быстрого k-NN поиска (рекомендуется для > 1000 примеров)
+faiss-cpu>=1.7.4
+numpy>=1.24.0                      # Требуется для Faiss
+
+# Infinity клиент для эмбеддингов (опционально, если есть сервер)
+requests>=2.31.0                   # Для Infinity API
+
+# ==================== Опциональные зависимости ====================
+
+# --- Для реальных эмбеддингов (альтернативы Infinity) ---
+# sentence-transformers>=2.2.0     # Локальные эмбеддинги (хороший выбор)
+# openai>=1.3.0                    # OpenAI Embeddings API
+# cohere>=4.0.0                    # Cohere Embeddings
+
+# --- Для реальных LLM (опционально) ---
+# openai>=1.3.0                    # GPT-4, GPT-3.5-turbo
+# anthropic>=0.7.0                 # Claude
+# google-generativeai>=0.3.0       # Gemini
+
+# --- Для локальных LLM (опционально) ---
+# transformers>=4.35.0             # Hugging Face модели
+# torch>=2.1.0                     # PyTorch (для трансформеров)
+# accelerate>=0.24.0               # Ускорение inference
+
+# --- Для PostgreSQL (production) ---
+# sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.0
+# alembic>=1.12.0                  # Миграции БД
+
+# --- Для MongoDB (альтернатива PostgreSQL) ---
+# pymongo>=4.5.0
+# motor>=3.3.0                     # Async MongoDB
+
+# --- Для векторных БД (production) ---
+# chromadb>=0.4.0                  # Простая векторная БД
+# pinecone-client>=2.2.0           # Managed service
+# qdrant-client>=1.7.0             # Qdrant векторная БД
+
+# ==================== Тестирование ====================
+
+# pytest>=7.4.0
+# pytest-asyncio>=0.21.0           # Для async тестов
+# pytest-cov>=4.1.0                # Покрытие
+# httpx>=0.25.0                    # HTTP клиент для тестов
+
+# ==================== Разработка ====================
+
+# black>=23.7.0                    # Форматирование
+# flake8>=6.1.0                    # Линтер
+# mypy>=1.5.0                      # Проверка типов

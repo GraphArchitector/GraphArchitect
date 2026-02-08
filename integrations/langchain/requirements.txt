@@ -1,0 +1,30 @@
+# LangChain Integration Requirements
+
+# Core LangChain
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-core>=0.1.0
+
+# LLM Providers
+openai>=1.0.0              # OpenAI (GPT-4, GPT-3.5)
+anthropic>=0.7.0           # Claude (опционально)
+
+# Tools dependencies
+wikipedia>=1.4.0           # Wikipedia tool
+duckduckgo-search>=4.0.0   # DuckDuckGo search (опционально)
+
+# Vector stores (опционально)
+chromadb>=0.4.0            # Chroma vector DB
+faiss-cpu>=1.7.4           # Faiss (быстрый поиск)
+
+# GraphArchitect
+# Установить локально:
+# cd ../../src/GraphArchitectLib
+# pip install -e .
+
+# Или добавить в PYTHONPATH:
+# set PYTHONPATH=../../src/GraphArchitectLib;%PYTHONPATH%
+
+# Utilities
+pydantic>=2.0.0            # Для моделей данных
+numpy>=1.24.0              # Для векторных операций

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графовый Архитектор</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/workflow_styles.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .unified-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .main-workspace {
+            display: grid;
+            grid-template-columns: 280px 1fr 250px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            border-top: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            align-items: stretch;
+        }
+
+        .agents-sidebar, .library-sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Адаптивность для планшетов */
+        @media (max-width: 1400px) {
+            .main-workspace {
+                grid-template-columns: 1fr 280px;
+            }
+            .agents-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .main-workspace {
+                grid-template-columns: 1fr;
+            }
+            .library-sidebar {
+                display: none;
+            }
+            .workflow-steps-top {
+                min-height: 70px !important;
+            }
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 850px) {
+            .workflow-header h1 {
+                font-size: 16px;
+            }
+            .workflow-header p {
+                display: none; /* Скрываем подзаголовок для экономии места */
+            }
+            .workflow-controls {
+                gap: 5px;
+            }
+            .template-select {
+                max-width: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .workflow-header {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 8px 15px;
+            }
+            .workflow-info h1 {
+                font-size: 14px;
+            }
+            .workflow-stats {
+                gap: 10px;
+                padding: 0 15px;
+                height: auto;
+                min-height: 35px;
+                justify-content: space-around;
+            }
+            .stat-item {
+                gap: 5px;
+            }
+            .stat-label {
+                display: none;
+            }
+            .stat-value {
+                font-size: 14px;
+            }
+        }
+
+        .chat-and-logs {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .messages-area {
+            flex: 1 1 0;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #fdfdfd;
+            min-height: 0;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .unified-input-zone {
+            padding: 15px 25px;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 14px;
+        }
+
+        #message-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 15px;
+            resize: none;
+        }
+
+        /* ПОДВАЛ СТАТИСТИКИ - ТЕПЕРЬ ОН ЧАСТЬ ПОТОКА */
+        .workflow-stats {
+            height: 50px;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            font-size: 12px;
+            flex-shrink: 0;
+            gap: 30px;
+            position: relative !important;
+            bottom: auto !important;
+        }
+
+        .execution-block.collapsed .execution-content {
+            display: none !important;
+        }
+
+        /* Markdown стили */
+        .markdown-content {
+            white-space: normal;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        .markdown-content p {
+            margin-bottom: 12px;
+            display: block;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin-left: 25px;
+            margin-bottom: 12px;
+        }
+        .markdown-content li {
+            margin-bottom: 4px;
+        }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .markdown-content h1 { font-size: 1.4em; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .markdown-content h2 { font-size: 1.2em; }
+        .markdown-content h3 { font-size: 1.1em; }
+        .markdown-content code {
+            background: #f1f3f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        .markdown-content pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .markdown-content pre code {
+            background: transparent;
+            padding: 0;
+        }
+        .markdown-content img {
+            max-width: 100%;
+            max-height: 600px;
+            height: auto;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: block;
+        }
+        .execution-content img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+        
+        /* Убираем переносы внутри base64 */
+        .markdown-content p {
+            overflow-wrap: break-word;
+            word-break: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="unified-container">
+        <!-- HEADER -->
+        <div class="workflow-header" style="flex-shrink: 0;">
+            <div class="workflow-info">
+                <h1>GraphArchitect</h1>
+                <p>Система оркестрирования инструментов с графовым планированием</p>
+            </div>
+            <div class="workflow-controls">
+                <select id="template-selector" class="template-select" title="Выберите алгоритм графового планирования">
+                    <option value="dijkstra">Dijkstra</option>
+                    <option value="astar">A-star</option>
+                    <option value="yen_3">Алгоритм Йена (Топ-3)</option>
+                    <option value="yen_5" selected>Алгоритм Йена (Топ-5)</option>
+                    <option value="yen_10">Алгоритм Йена (Топ-10)</option>
+                    <option value="ant_3">Алгоритм муравьиной колонии (Топ-3)</option>
+                    <option value="ant_5">Алгоритм муравьиной колонии (Топ-5)</option>
+                    <option value="ant_10">Алгоритм муравьиной колонии (Топ-10)</option>
+                </select>
+                <label style="margin-left: 15px; display: inline-flex; align-items: center;">
+                    <input type="checkbox" id="use-rewoo-checkbox" style="margin-right: 5px;">
+                    <span style="font-size: 14px;">ReWOO</span>
+                </label>
+                <select id="user-priority-selector" style="margin-left: 10px; padding: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 13px;">
+                    <option value="balanced">Balanced</option>
+                    <option value="quality">Quality</option>
+                    <option value="speed">Speed</option>
+                    <option value="cost">Low Cost</option>
+                </select>
+                <div style="margin-left: 15px; display: inline-flex; align-items: center; position: relative;">
+                    <input type="password" id="api-key-input" placeholder="OpenRouter API Key" 
+                           style="width: 180px; padding: 5px 30px 5px 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 12px;">
+                    <span id="api-key-status" style="position: absolute; right: 8px; font-size: 11px; color: #aaa;">--</span>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Обработка API ключа
+            const apiKeyInput = document.getElementById('api-key-input');
+            const apiKeyStatus = document.getElementById('api-key-status');
+            
+            // Функция отправки ключа на сервер
+            function sendApiKey(key) {
+                fetch('/api/set-api-key', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({key: key})
+                }).then(r => r.json()).then(d => {
+                    if (d.status === 'ok') {
+                        apiKeyStatus.textContent = 'OK';
+                        apiKeyStatus.style.color = '#10b981';
+                    }
+                }).catch(() => {
+                    apiKeyStatus.textContent = '??';
+                    apiKeyStatus.style.color = '#ef4444';
+                });
+            }
+            
+            // Загрузка сохраненного ключа И отправка на сервер
+            const savedKey = localStorage.getItem('openrouter_api_key');
+            if (savedKey) {
+                apiKeyInput.value = savedKey;
+                apiKeyStatus.textContent = '...';
+                apiKeyStatus.style.color = '#f59e0b';
+
+                sendApiKey(savedKey);
+            }
+            
+            apiKeyInput.addEventListener('change', function() {
+                const key = this.value.trim();
+                if (key && key.length > 10) {
+                    localStorage.setItem('openrouter_api_key', key);
+                    apiKeyStatus.textContent = '...';
+                    apiKeyStatus.style.color = '#f59e0b';
+                    sendApiKey(key);
+                } else {
+                    localStorage.removeItem('openrouter_api_key');
+                    apiKeyStatus.textContent = '--';
+                    apiKeyStatus.style.color = '#aaa';
+                    // Очистка на сервере
+                    fetch('/api/set-api-key', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({key: ''})
+                    });
+                }
+            });
+        </script>
+
+        <!-- WORKFLOW BAR -->
+        <div class="workflow-steps-top" style="min-height: 90px; background: white; border-bottom: 1px solid #eee; flex-shrink: 0; display: flex; align-items: center; padding: 10px 20px;">
+            <div id="workflow-steps" class="workflow-steps" style="width: 100%;">
+                <p style="color: #adb5bd; font-size: 13px; text-align: center;">Схема графа появится здесь после запуска...</p>
+            </div>
+        </div>
+
+        <div class="main-workspace">
+            <!-- SIDEBAR LEFT -->
+            <div class="agents-sidebar" style="border-right: 1px solid #eee;">
+                <div class="agents-header" style="background: #f8f9fa; padding: 15px;">
+                    <h3 style="font-size: 14px;">Кандидаты</h3>
+                    <p id="current-step-name" style="font-size: 11px; color: #868e96;">Ожидание...</p>
+                </div>
+                <div id="competing-agents" class="competing-agents-list"></div>
+            </div>
+
+            <!-- CHAT CENTER -->
+            <div class="chat-and-logs">
+                <div id="chat-messages" class="messages-area">
+                    <div class="welcome-message" id="welcome-message" style="text-align: center;">
+                        <div style="font-size: 40px;">GA</div>
+                        <h2 style="margin: 15px 0;">Графовый Архитектор</h2>
+                        <p style="color: #868e96;">Опишите задачу или загрузите документы ниже.</p>
+                    </div>
+                </div>
+
+                <div class="unified-input-zone">
+                        <div id="file-display" class="file-chips-container"></div>
+                        <form id="chat-form">
+                            <div class="input-wrapper" title="Перетащите файлы сюда или нажмите на скрепку">
+                                <label for="file-input" style="cursor: pointer; opacity: 0.6; padding: 5px;">
+                                    <span style="font-size: 20px;">📎</span>
+                                </label>
+                                <input type="file" id="file-input" multiple style="display: none;">
+                                <textarea id="message-input" placeholder="Введите ваш запрос или перетащите файлы..." rows="1"></textarea>
+                                <button type="submit" id="send-btn" style="background: var(--f-blue); color: white; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer;">Send</button>
+                            </div>
+                            <input type="hidden" name="files" id="files-data" value="">
+                        </form>
+                </div>
+            </div>
+
+            <!-- SIDEBAR RIGHT -->
+            <div class="library-sidebar" style="border-left: 1px solid #eee;">
+                <div class="library-header" style="padding: 15px;">
+                    <h3 style="font-size: 14px;">Библиотека</h3>
+                    <div class="search-container">
+                        <input type="text" id="agent-search" placeholder="Поиск агента..." class="search-input">
+                    </div>
+                </div>
+                <div id="agent-library" class="agent-library-list"></div>
+            </div>
+        </div>
+
+        <!-- FOOTER (ЧАСТЬ ГИБКОГО КОНТЕЙНЕРА) -->
+        <div class="workflow-stats">
+            <div class="stat-item"><span class="stat-label">Шаг:</span> <span id="stat-current-step" class="stat-value">-</span></div>
+            <div style="flex: 1; display: flex; align-items: center; gap: 15px;">
+                <span class="stat-label">Прогресс:</span>
+                <div style="flex: 1; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
+                    <div id="stat-progress-fill" style="height: 100%; background: var(--f-blue); width: 0%;"></div>
+                </div>
+                <span id="stat-progress" class="stat-value">0%</span>
+            </div>
+            <div class="stat-item"><span class="stat-label">Время:</span> <span id="stat-time" class="stat-value">0:00</span></div>
+            <div class="stat-item"><span id="stat-status" class="stat-value">Готов</span></div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/workflow_app.js"></script>
+</body>
+</html>

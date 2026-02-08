@@ -1,0 +1,1183 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background: #f5f7fa;
+    overflow: hidden;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    height: 100vh;
+    background: #f5f7fa;
+}
+
+/* Центральная панель - чат */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    height: 100vh;
+}
+
+.chat-header {
+    padding: 24px 30px;
+    border-bottom: 2px solid transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 2px 12px rgba(102, 126, 234, 0.15);
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+}
+
+.chat-header p {
+    margin: 6px 0 0 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* Workflow визуализация с 3D эффектами */
+.workflow-section {
+    background: linear-gradient(135deg, #fafbfc 0%, #f0f1f3 100%);
+    padding: 24px 30px;
+    border-bottom: 2px solid #e5e7eb;
+    position: relative;
+    overflow: visible;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+/* Статичный градиентный фон */
+.workflow-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at top, rgba(102, 126, 234, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.workflow-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.workflow-title span:first-child {
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+}
+
+.workflow-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+    z-index: 1;
+    perspective: 1000px;
+}
+
+.workflow-step {
+    flex: 1 1 0;
+    min-width: 150px;
+    max-width: 220px;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    transform-style: preserve-3d;
+}
+
+.step-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: 3px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 24px 14px;
+    text-align: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    position: relative;
+    overflow: visible;
+    /* 3D эффект глубины */
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.08),
+        0 8px 16px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+}
+
+/* 3D hover эффект */
+.step-card:hover {
+    transform: translateZ(20px) rotateX(5deg);
+    box-shadow: 
+        0 12px 24px rgba(0, 0, 0, 0.12),
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Прогресс-бар для активной карточки */
+.step-card.active::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    animation: progressBar 3s ease-in-out infinite;
+}
+
+@keyframes progressBar {
+    0% { width: 0%; }
+    50% { width: 100%; }
+    100% { width: 100%; }
+}
+
+/* Волновой эффект для активной карточки */
+.step-card.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(59, 130, 246, 0.1), 
+        transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.step-card.active {
+    background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
+    border-color: #3b82f6;
+    /* 3D поднятие и свечение */
+    box-shadow: 
+        0 12px 32px rgba(59, 130, 246, 0.3),
+        0 20px 60px rgba(59, 130, 246, 0.15),
+        0 0 0 4px rgba(59, 130, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateZ(30px) scale(1.05) rotateX(-2deg);
+}
+
+.step-card.completed {
+    background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #10b981;
+    /* 3D эффект с зеленым свечением */
+    box-shadow: 
+        0 8px 20px rgba(16, 185, 129, 0.25),
+        0 16px 40px rgba(16, 185, 129, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    position: relative;
+    transform: translateZ(10px);
+}
+
+/* Галочка для завершенных */
+.step-card.completed::before {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    animation: checkmark 0.5s ease-out;
+}
+
+@keyframes checkmark {
+    0% { 
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(0deg);
+    }
+    100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.step-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    line-height: 1;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.step-card.active .step-icon {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.step-card.completed .step-icon {
+    filter: drop-shadow(0 4px 8px rgba(16, 185, 129, 0.3));
+}
+
+.step-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.3px;
+}
+
+.step-status {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    padding: 5px 14px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.step-card.active .step-status {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    animation: pulse-status 2s ease-in-out infinite;
+}
+
+@keyframes pulse-status {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.step-card.completed .step-status {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.step-arrow {
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 24px;
+    z-index: 2;
+    background: linear-gradient(135deg, #fafbfc 0%, #f0f1f3 100%);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid #e5e7eb;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.step-card.active + .step-arrow {
+    color: #3b82f6;
+    border-color: #3b82f6;
+    animation: arrow-pulse 1s ease-in-out infinite;
+}
+
+@keyframes arrow-pulse {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-50%) translateX(4px); }
+}
+
+/* Сообщения чата с 3D perspective */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 50%, #f3f4f6 100%);
+    position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* Декоративные элементы фона */
+.chat-messages::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: radial-gradient(ellipse at top, rgba(102, 126, 234, 0.08), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.welcome-message {
+    text-align: center;
+    padding: 100px 20px;
+    color: #6b7280;
+    animation: fadeInScale 0.6s ease-out;
+    position: relative;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-message h3 {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #111827;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.message {
+    margin-bottom: 20px;
+    max-width: 100%;
+    animation: slideInMessage 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    flex-shrink: 0;
+}
+
+@keyframes slideInMessage {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.user-message {
+    margin-left: auto;
+    width: fit-content;
+    max-width: 75%;
+    min-width: 80px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 18px 18px 4px 18px;
+    /* 3D тени для глубины */
+    box-shadow: 
+        0 4px 12px rgba(102, 126, 234, 0.4),
+        0 8px 24px rgba(118, 75, 162, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+}
+
+.user-message:hover {
+    transform: translateZ(5px) translateX(-2px);
+    box-shadow: 
+        0 6px 16px rgba(102, 126, 234, 0.5),
+        0 12px 32px rgba(118, 75, 162, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Статичный градиент вместо вращающегося */
+.user-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 100%);
+    transition: left 0.5s ease;
+}
+
+.user-message:hover::before {
+    left: 100%;
+}
+
+.assistant-message {
+    background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+    border: 2px solid #e5e7eb;
+    padding: 15px 20px;
+    border-radius: 20px 20px 20px 4px;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    /* 3D neumorphism эффект */
+    box-shadow: 
+        0 6px 16px rgba(0, 0, 0, 0.08),
+        0 12px 32px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.assistant-message:hover {
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 16px 48px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateZ(8px) translateX(2px);
+}
+
+/* 3D иконка робота с глубиной */
+.assistant-message::before {
+    content: 'GA';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    /* 3D тени для иконки */
+    box-shadow: 
+        0 4px 12px rgba(102, 126, 234, 0.4),
+        0 8px 24px rgba(118, 75, 162, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    transform: translateZ(10px);
+    transition: transform 0.3s ease;
+}
+
+.assistant-message:hover::before {
+    transform: translateZ(15px) scale(1.1);
+}
+
+.message-content {
+    line-height: 1.8;
+    font-size: 14.5px;
+    color: #374151;
+    position: relative;
+    z-index: 1;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.message-content img {
+    max-width: 100%;
+    max-height: 600px;
+    height: auto;
+    border-radius: 12px;
+    margin: 15px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: block;
+}
+
+.user-message .message-content {
+    color: white;
+    font-weight: 500;
+}
+
+.message-content strong {
+    font-weight: 700;
+    color: #111827;
+}
+
+.user-message .message-content strong {
+    color: white;
+}
+
+.message-content em {
+    font-style: italic;
+    color: #6b7280;
+}
+
+.user-message .message-content em {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Загруженные файлы */
+.uploaded-files-container {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    border-radius: 14px;
+    border: 2px solid #e5e7eb;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease-out;
+}
+
+.file-item:hover {
+    border-color: #667eea;
+    background: #eff6ff;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    transform: translateX(4px);
+}
+
+.file-item:last-child {
+    margin-bottom: 0;
+}
+
+.file-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 3px;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Поле ввода */
+.input-container {
+    padding: 24px 30px;
+    border-top: 2px solid #e5e7eb;
+    background: white;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.input-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+textarea {
+    flex: 1;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 14px;
+    resize: none;
+    font-family: 'Inter', sans-serif;
+    min-height: 52px;
+    max-height: 150px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(145deg, #f9fafb 0%, #fafbfc 100%);
+    /* 3D neumorphism input */
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.06),
+        inset 0 4px 8px rgba(0, 0, 0, 0.03);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    /* 3D фокус эффект */
+    box-shadow: 
+        0 0 0 4px rgba(102, 126, 234, 0.12),
+        0 4px 12px rgba(102, 126, 234, 0.15),
+        inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    background: white;
+    transform: translateZ(2px);
+}
+
+.attach-btn {
+    width: 52px;
+    min-width: 52px;
+    height: 52px;
+    background: linear-gradient(145deg, #f9fafb 0%, #f3f4f6 100%);
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    color: #6b7280;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 3D эффект кнопки */
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform-style: preserve-3d;
+}
+
+.attach-btn:hover {
+    background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    /* 3D поднятие */
+    box-shadow: 
+        0 6px 16px rgba(102, 126, 234, 0.3),
+        0 12px 32px rgba(118, 75, 162, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateZ(8px) scale(1.08);
+}
+
+.attach-btn:active {
+    transform: translateZ(2px) scale(1.02);
+}
+
+.send-btn {
+    width: 130px;
+    min-width: 130px;
+    padding: 14px 28px;
+    background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    height: 52px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 3D эффект с глубокими тенями */
+    box-shadow: 
+        0 4px 12px rgba(102, 126, 234, 0.4),
+        0 8px 24px rgba(118, 75, 162, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Ripple эффект для кнопки */
+.send-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.send-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.send-btn:hover {
+    background: linear-gradient(145deg, #5568d3 0%, #6a3f8f 100%);
+    /* 3D поднятие */
+    box-shadow: 
+        0 8px 20px rgba(102, 126, 234, 0.5),
+        0 16px 40px rgba(118, 75, 162, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) translateZ(10px) scale(1.02);
+}
+
+.send-btn:active {
+    transform: translateY(-1px) translateZ(5px) scale(0.98);
+    box-shadow: 
+        0 4px 12px rgba(102, 126, 234, 0.4),
+        0 8px 20px rgba(118, 75, 162, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.send-btn:disabled {
+    background: linear-gradient(145deg, #9ca3af 0%, #6b7280 100%);
+    cursor: not-allowed;
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: none;
+    opacity: 0.6;
+}
+
+/* Правая панель - агенты */
+.agents-panel {
+    background: #fafbfc;
+    border-left: 2px solid #e5e7eb;
+    overflow-y: auto;
+}
+
+.agents-header {
+    padding: 24px 20px;
+    border-bottom: 2px solid #e5e7eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.agents-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.3px;
+}
+
+.agent-card {
+    padding: 20px;
+    border-bottom: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+    margin: 10px 12px;
+    border-radius: 16px;
+    /* 3D neumorphism */
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 8px 24px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Hover эффект подсветки */
+.agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(102, 126, 234, 0.08), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.agent-card:hover::before {
+    left: 100%;
+}
+
+.agent-card:hover {
+    background: linear-gradient(145deg, #f9fafb 0%, #f3f4f6 100%);
+    /* 3D поднятие и сдвиг */
+    box-shadow: 
+        0 12px 32px rgba(102, 126, 234, 0.2),
+        0 20px 48px rgba(102, 126, 234, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateX(-6px) translateZ(15px) scale(1.03);
+    border-bottom-color: #667eea;
+}
+
+.agent-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 24px;
+    /* 3D эффект с глубокими тенями */
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.25),
+        0 8px 24px rgba(0, 0, 0, 0.15),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.agent-card:hover .agent-avatar {
+    /* 3D поворот и поднятие */
+    transform: translateZ(20px) rotateY(15deg) scale(1.15);
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 16px 40px rgba(0, 0, 0, 0.2),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Пульсирующее кольцо вокруг аватара */
+.agent-avatar::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 16px;
+    border: 2px solid currentColor;
+    opacity: 0;
+    animation: avatarPulse 2s ease-in-out infinite;
+    transform: translateZ(-5px);
+}
+
+@keyframes avatarPulse {
+    0%, 100% {
+        opacity: 0;
+        transform: translateZ(-5px) scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: translateZ(-5px) scale(1.1);
+    }
+}
+
+.agent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.agent-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 5px;
+    letter-spacing: 0.2px;
+}
+
+.agent-desc {
+    font-size: 13px;
+    color: #10b981;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.agent-desc::before {
+    content: '*';
+    font-size: 8px;
+    animation: statusBlink 2s ease-in-out infinite;
+}
+
+@keyframes statusBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.agent-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.6),
+                0 0 24px rgba(16, 185, 129, 0.3);
+    animation: statusPulse 2s ease-in-out infinite;
+    position: relative;
+}
+
+/* Расширяющиеся волны от статуса */
+.agent-status::before,
+.agent-status::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #10b981;
+    transform: translate(-50%, -50%);
+    animation: statusWave 2s ease-out infinite;
+}
+
+.agent-status::after {
+    animation-delay: 1s;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes statusWave {
+    0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.6;
+    }
+    100% {
+        width: 300%;
+        height: 300%;
+        opacity: 0;
+    }
+}
+
+/* Loading индикатор и Typing indicator */
+.loading-indicator {
+    display: inline-flex;
+    gap: 6px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.loading-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    animation: dotBounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes dotBounce {
+    0%, 80%, 100% {
+        transform: scale(0.6) translateY(0);
+        opacity: 0.4;
+    }
+    40% {
+        transform: scale(1) translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Typing indicator для чата */
+.typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px 20px 20px 4px;
+    margin-bottom: 24px;
+    max-width: 75%;
+    animation: slideInMessage 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.typing-indicator .typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #9ca3af;
+    animation: typingBounce 1s infinite ease-in-out;
+}
+
+.typing-indicator .typing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator .typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        background: #9ca3af;
+    }
+    30% {
+        transform: translateY(-8px);
+        background: #667eea;
+    }
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    border: 2px solid #f3f4f6;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5568d3 0%, #6a3f8f 100%);
+    border-color: #e5e7eb;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #4f5fd1 0%, #5f3580 100%);
+}
+
+/* Скроллбар для Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f3f4f6;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .main-container {
+        grid-template-columns: 1fr 280px;
+    }
+    
+    .workflow-step {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .agents-panel {
+        display: none;
+    }
+    
+    .workflow-steps {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+    
+    .workflow-step {
+        min-width: 100px;
+        max-width: 150px;
+    }
+    
+    .step-card {
+        padding: 14px 10px;
+        min-height: 100px;
+    }
+    
+    .step-icon {
+        font-size: 24px;
+    }
+    
+    .step-name {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-header h2 {
+        font-size: 18px;
+    }
+    
+    .workflow-section {
+        padding: 16px 20px;
+    }
+    
+    .chat-messages {
+        padding: 20px;
+    }
+    
+    .input-container {
+        padding: 16px 20px;
+    }
+    
+    .send-btn {
+        width: 100px;
+        min-width: 100px;
+    }
+}
