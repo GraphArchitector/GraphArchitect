@@ -128,6 +128,20 @@ GraphArchitect/
 
 ---
 
+## Модели и датасет
+
+### Эмбеддеры (NLI (k-NN)/Выбор инструментов)
+
+- [FractalGPT/E5SmallDistilV2](https://huggingface.co/FractalGPT/E5SmallDistilV2) — модель обученная на задаче NLI на базе E5Small, (100 млн параметров) 
+- [FractalGPT/SbertDistilV2](https://huggingface.co/FractalGPT/SbertDistilV2) — модель обученная на задаче NLI на базе [FractalGPT/SbertDistil](https://huggingface.co/FractalGPT/SbertDistil), (11.8 млн параметров) 
+
+### LLM для NLI
+- [Ponimash/Qwen2.5-nli-7b](https://huggingface.co/Ponimash/Qwen2.5-nli-7b)
+
+### NLI Датасет
+- [Ponimash/nli_dataset](https://huggingface.co/datasets/Ponimash/nli_dataset) Датасет перевода задач (9 999 примеров)
+---
+
 ## Документация
 
 ### Для начинающих
