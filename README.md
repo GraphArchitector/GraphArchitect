@@ -102,7 +102,7 @@ GraphArchitect/
 ### Natural Language Interface
 
 2 подхода:
-- **k-NN few-shot**: Всегда работает
+- **k-NN few-shot**: Few-shot для LLM естественно-языкового интерфейса, также может использоваться как классификатор
 - **Qwen fine-tuned**: Высокая точность (требуется модель)
 
 ### Обучение
