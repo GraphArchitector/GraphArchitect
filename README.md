@@ -172,7 +172,7 @@ GET  /api/training/statistics
 GET  /api/health
 ```
 
-Полная документация: `http://localhost:8000/docs`
+Полная документация (API): `http://localhost:8000/docs`
 
 ---
 
@@ -279,8 +279,6 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 - Обучаемые функции качества
 - Softmax с адаптивной температурой
 - Policy Gradient обучение
-
-**См.**: `Отчет/Отчет старый.txt`
 
 ---
 
