@@ -54,7 +54,7 @@ GraphArchitect/
 │   │   ├── api_router.py       # 16 endpoints
 │   │   └── grapharchitect_bridge.py
 │   │
-│   └── Tests/                   # 235 тестов (88%)
+│   └── Tests/                  
 │
 ├── tutorials/                   # 21 туториал
 │   ├── beginner/               # 5 туториалов
@@ -65,13 +65,12 @@ GraphArchitect/
 ├── integrations/                # Интеграции
 │   └── langchain/              # LangChain
 │
-├── examples/                    # Примеры кода
-│   └── Python/
-│       ├── nli/                # NLI примеры
-│       ├── advanced/           # Продвинутые
-│       └── protocols/          # A2A/MCP
-│
-└── Отчет/                      # Научный отчет
+└── examples/                    # Примеры кода
+    └── Python/
+       ├── nli/                # NLI примеры
+       ├── advanced/           # Продвинутые
+       └── protocols/          # A2A/MCP
+
 ```
 
 ---
@@ -118,12 +117,6 @@ GraphArchitect/
 
 - **A2A** (Agent2Agent) - Google
 - **MCP** (Model Context Protocol) - Anthropic
-
-### Эмбеддинги
-
-- Simple (хеширование)
-- Infinity API (качество)
-- Faiss (скорость)
 
 ---
 
@@ -173,7 +166,7 @@ GET  /api/training/statistics
 GET  /api/health
 ```
 
-Полная документация: `http://localhost:8000/docs`
+Полная документация (API): `http://localhost:8000/docs`
 
 ---
 
@@ -208,7 +201,7 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 
 ### Опциональные
 
-- Qwen model (для NLI)
+- Transformers (для NLI)
 - LangChain (для интеграции)
 - Docker (для deployment)
 
@@ -262,14 +255,6 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 
 ---
 
-## Статус
-
-- **Библиотека**: Production-ready (95%)
-- **Web API**: Production-ready (90%)
-- **Туториалы**: Готовы (100%)
-- **Интеграции**: Базовые (80%)
-
----
 
 ## Научная база
 
@@ -280,8 +265,6 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 - Обучаемые функции качества
 - Softmax с адаптивной температурой
 - Policy Gradient обучение
-
-**См.**: `Отчет/Отчет старый.txt`
 
 ---
 
