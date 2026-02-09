@@ -3,7 +3,7 @@
 ![Watchers](https://img.shields.io/github/watchers/GraphArchitector/GraphArchitect?style=flat-square)
 
 
-<img src="https://github.com/GraphArchitector/GraphArchitect/blob/main/docs/img/logo_ga.png?raw=true" width=400 />
+<img src="https://github.com/GraphArchitector/GraphArchitect/blob/main/docs/img/logo_ga.png?raw=true" width=350 />
 
 
 
