@@ -54,7 +54,7 @@ GraphArchitect/
 │   │   ├── api_router.py       # 16 endpoints
 │   │   └── grapharchitect_bridge.py
 │   │
-│   └── Tests/                   # 235 тестов (88%)
+│   └── Tests/                  
 │
 ├── tutorials/                   # 21 туториал
 │   ├── beginner/               # 5 туториалов
@@ -65,13 +65,12 @@ GraphArchitect/
 ├── integrations/                # Интеграции
 │   └── langchain/              # LangChain
 │
-├── examples/                    # Примеры кода
-│   └── Python/
-│       ├── nli/                # NLI примеры
-│       ├── advanced/           # Продвинутые
-│       └── protocols/          # A2A/MCP
-│
-└── Отчет/                      # Научный отчет
+└── examples/                    # Примеры кода
+    └── Python/
+       ├── nli/                # NLI примеры
+       ├── advanced/           # Продвинутые
+       └── protocols/          # A2A/MCP
+
 ```
 
 ---
