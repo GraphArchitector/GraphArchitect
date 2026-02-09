@@ -21,7 +21,7 @@
 - **Граф-планирование**: Dijkstra, A*, Yen, ACO алгоритмы
 - **Интеллектуальный выбор**: Softmax с адаптивной температурой
 - **Автообучение**: Policy Gradient + Contrastive Learning
-- **Natural Language**: NLI для парсинга естественного языка
+- **Natural Language**: NLI для перевода задач с естественного языка на язык MASL
 - **Интеграции**: LangChain, A2A, MCP протоколы
 - **Web API**: FastAPI + WebSocket + SQLite
 
@@ -90,8 +90,8 @@ GraphArchitect/
 4 алгоритма поиска путей:
 - **Dijkstra**: Один кратчайший путь (быстро)
 - **A***: С эвристикой (еще быстрее)
-- **Yen**: Топ-K путей (альтернативы)
-- **ACO**: Муравьиный (разнообразие)
+- **Yen**: поиск топ-K путей алгоритмом Йена
+- **ACO**: алгоритм муравьиной колонии
 
 ### Выбор инструментов
 
@@ -102,14 +102,14 @@ GraphArchitect/
 ### Natural Language Interface
 
 2 подхода:
-- **k-NN few-shot**: Few-shot для LLM естественно-языкового интерфейса, также может использоваться как классификатор
-- **Qwen fine-tuned**: Высокая точность (требуется модель)
+- **k-NN few-shot**: few-shot для LLM естественно-языкового интерфейса, также может использоваться как классификатор
+- **LLM NLI**: высокая точность (требуется модель).
 
 ### Обучение
 
-- **Policy Gradient**: Обновление репутации
-- **Contrastive Learning**: Обновление эмбеддингов
-- **Автоматическое**: После каждого выполнения
+- **Policy Gradient**: обновление репутации
+- **Contrastive Learning**: обновление эмбеддингов
+- **Автоматическое**: после каждого выполнения (на базе RLAIF или метки пользователя)
 
 ---
 
@@ -219,7 +219,7 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 
 - Python 3.10+
 - faiss-cpu (для скорости)
-- Infinity server (для качества)
+- Infinity server с моделями intfloat/multilingual-e5-large-instruct или FractalGPT/E5SmallDistilV2. (Самая быстрая модель FractalGPT/SbertDistilV2)
 
 ### Опциональные
 
