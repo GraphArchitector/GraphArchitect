@@ -118,12 +118,6 @@ GraphArchitect/
 - **A2A** (Agent2Agent) - Google
 - **MCP** (Model Context Protocol) - Anthropic
 
-### Эмбеддинги
-
-- Simple (хеширование)
-- Infinity API (качество)
-- Faiss (скорость)
-
 ---
 
 ## Документация
@@ -207,7 +201,7 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 
 ### Опциональные
 
-- Qwen model (для NLI)
+- Transformers (для NLI)
 - LangChain (для интеграции)
 - Docker (для deployment)
 
@@ -261,14 +255,6 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 
 ---
 
-## Статус
-
-- **Библиотека**: Production-ready (95%)
-- **Web API**: Production-ready (90%)
-- **Туториалы**: Готовы (100%)
-- **Интеграции**: Базовые (80%)
-
----
 
 ## Научная база
 
