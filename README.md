@@ -1,3 +1,11 @@
+![Stars](https://img.shields.io/github/stars/GraphArchitector/GraphArchitect?style=flat-square)
+![Forks](https://img.shields.io/github/forks/GraphArchitector/GraphArchitect?style=flat-square)
+![Watchers](https://img.shields.io/github/watchers/GraphArchitector/GraphArchitect?style=flat-square)
+
+
+<img src="https://github.com/GraphArchitector/GraphArchitect/blob/main/docs/img/logo_ga.png?raw=true" width=400 />
+
+
 # GraphArchitect
 
 Открытая библиотека для планирования и выполнения многошаговых задач с помощью графа инструментов.
