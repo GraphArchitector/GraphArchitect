@@ -136,10 +136,10 @@ GraphArchitect/
 - [FractalGPT/SbertDistilV2](https://huggingface.co/FractalGPT/SbertDistilV2) — модель обученная на задаче NLI на базе [FractalGPT/SbertDistil](https://huggingface.co/FractalGPT/SbertDistil), (11.8 млн параметров) 
 
 ### LLM для NLI
-- [Ponimash/Qwen2.5-nli-7b](https://huggingface.co/Ponimash/Qwen2.5-nli-7b)
+- [Ponimash/Qwen2.5-nli-7b](https://huggingface.co/Ponimash/Qwen2.5-nli-7b) — модель на базе [Qwen/Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) для преобразования задач на естественном языке в язык MASL.   [Пример на Colab](https://colab.research.google.com/drive/1RI3d0W-KxlSfoXI2yjm-jMA5PnuSFulV)
 
 ### NLI Датасет
-- [Ponimash/nli_dataset](https://huggingface.co/datasets/Ponimash/nli_dataset) Датасет перевода задач (9 999 примеров)
+- [Ponimash/nli_dataset](https://huggingface.co/datasets/Ponimash/nli_dataset) — датасет перевода задач (9 999 примеров)
 ---
 
 ## Документация
