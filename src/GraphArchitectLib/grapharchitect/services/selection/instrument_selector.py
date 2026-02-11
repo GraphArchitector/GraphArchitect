@@ -77,10 +77,10 @@ class InstrumentSelector:
         if not tools:
             raise ValueError("Список инструментов не может быть пустым")
         
-        # 1. Получить логиты от всех инструментов
+        # Получить логиты от всех инструментов
         logits = self._get_logits(tools, task_embedding)
         
-        # 2. Отобрать топ-K по логитам
+        # Отобрать топ-K по логитам
         top_k_items = sorted(
             logits.items(),
             key=lambda x: x[1],
@@ -90,19 +90,19 @@ class InstrumentSelector:
         top_k_tools = [tool for tool, _ in top_k_items]
         top_k_logits = {tool: logit for tool, logit in top_k_items}
         
-        # 3. Вычислить температуру группы
+        # Вычислить температуру группы
         temperature = self._calculate_group_temperature(top_k_tools)
         
-        # 4. Применить softmax с температурой
+        # Применить softmax с температурой
         probabilities = self._apply_softmax_with_temperature(
             top_k_logits,
             temperature
         )
         
-        # 5. Сэмплировать инструмент
+        # Сэмплировать инструмент
         selected_tool = self._sample_tool(probabilities)
         
-        # 6. Сформировать результат с градиентной информацией
+        # 6Сформировать результат с информацией о градиентах
         return InstrumentSelectionResult(
             selected_tool=selected_tool,
             selection_probability=probabilities[selected_tool],
@@ -202,24 +202,8 @@ class InstrumentSelector:
         }
         
         return probabilities
-    
+
     def _sample_tool(self, probabilities: Dict[BaseTool, float]) -> BaseTool:
-        """
-        Сэмплировать инструмент согласно распределению вероятностей.
-        
-        Args:
-            probabilities: Словарь вероятностей
-            
-        Returns:
-            Выбранный инструмент
-        """
-        sample = self._random.random()
-        cumulative = 0.0
-        
-        for tool, prob in probabilities.items():
-            cumulative += prob
-            if sample <= cumulative:
-                return tool
-        
-        # На случай ошибок округления - возвращаем первый
-        return next(iter(probabilities.keys()))
+        tools = list(probabilities.keys())
+        weights = list(probabilities.values())
+        return self._random.choices(tools, weights=weights, k=1)[0]

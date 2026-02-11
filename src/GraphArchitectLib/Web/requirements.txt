@@ -12,6 +12,8 @@ aiofiles>=23.2.0
 # Валидация данных
 pydantic>=2.5.0
 
+python-multipart
+
 # ==================== GraphArchitect (ОБЯЗАТЕЛЬНО) ====================
 
 # GraphArchitect устанавливается как локальный пакет:

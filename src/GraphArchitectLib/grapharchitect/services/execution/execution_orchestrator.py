@@ -13,7 +13,7 @@ from .execution_status import ExecutionStatus
 from .execution_step import ExecutionStep
 from ..pathfinding_algorithm import PathfindingAlgorithm
 
-# Используем TYPE_CHECKING для избежания циклических импортов
+# TYPE_CHECKING для избежания циклических импортов
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..embedding.embedding_service import EmbeddingService
@@ -77,13 +77,13 @@ class ExecutionOrchestrator:
         )
         
         try:
-            # 1. Создать эмбеддинг задачи если его нет
+            # Создать эмбеддинг задачи если его нет
             if task.task_embedding is None and task.description:
                 task.task_embedding = self._embedding_service.embed_text(
                     task.description
                 )
             
-            # 2. Найти стратегию (цепочку групп инструментов)
+            # Найти стратегию (цепочку групп инструментов)
             start_format = task.input_connector.format
             end_format = task.output_connector.format
             
@@ -102,13 +102,14 @@ class ExecutionOrchestrator:
                 )
                 return context
             
-            # 3. Берем первую стратегию
+            # Берем первую стратегию
             strategy = strategies[0]
             
-            # 4. Выполнить цепочку
-            self._execute_strategy(context, strategy, task.task_embedding, top_k)
+            # Выполнить цепочку
+            # ИСПРАВЛЕНИЕ: передаём available_tools для выбора
+            self._execute_strategy(context, strategy, task.task_embedding, top_k, available_tools)
             
-            # 5. Установить финальный статус
+            # Установить финальный статус
             context.status = ExecutionStatus.COMPLETED
             context.result = context.current_data
             
@@ -157,7 +158,7 @@ class ExecutionOrchestrator:
                     task.description
                 )
             
-            # Выполнить цепочку рёбер
+            # Выполнить цепочку рёбер (инструментов)
             for i, edge in enumerate(strategy_path):
                 self._execute_instrument_group(
                     context,
@@ -192,20 +193,21 @@ class ExecutionOrchestrator:
         context: ExecutionContext,
         strategy: List[BaseTool],
         task_embedding: Optional[List[float]],
-        top_k: int
+        top_k: int,
+        available_tools: List[BaseTool]
     ):
         """
         Выполнить стратегию - последовательность групп инструментов.
         
-        В текущей реализации strategy - это уже выбранные инструменты.
-        Для полной реализации нужно получить группу инструментов на ребре.
+        ИСПРАВЛЕНИЕ: Теперь используем available_tools для выбора,
+        а не только один инструмент из стратегии.
         """
         for i, tool in enumerate(strategy):
-            # Упрощение: используем один инструмент как группу из одного элемента
-            tools = [tool]
+            # ИСПРАВЛЕНИЕ: Передаём ВСЕ доступные инструменты для выбора
+            # вместо только одного из стратегии
             self._execute_instrument_group(
                 context,
-                tools,
+                available_tools,  # ← Все инструменты!
                 task_embedding,
                 i + 1,
                 top_k
@@ -243,7 +245,7 @@ class ExecutionOrchestrator:
         )
         
         try:
-            # 1. Выбрать инструмент с помощью логитов и температуры
+            # Выбрать инструмент с помощью логитов и температуры
             step.selection_result = self._instrument_selector.select_instrument(
                 tools,
                 task_embedding,
@@ -252,17 +254,17 @@ class ExecutionOrchestrator:
             
             step.selected_tool = step.selection_result.selected_tool
             
-            # 2. Сохранить градиентную информацию
+            # Сохранить информацию о градиентнтах
             context.add_gradient_trace(step.selection_result.gradient_info)
             
-            # 3. Выполнить инструмент
+            # Выполнить инструмент
             step.output_data = step.selected_tool.execute(step.input_data)
             step.success = True
             
-            # 4. Обновить текущие данные контекста
+            # Обновить текущие данные контекста
             context.current_data = step.output_data
             
-            # 5. Записать метрики
+            # Записать метрики
             step.end_time = datetime.utcnow()
             step.execution_time = (
                 step.end_time - step.start_time
