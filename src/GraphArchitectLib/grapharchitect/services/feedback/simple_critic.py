@@ -85,10 +85,8 @@ class SimpleCritic(ICriticTool):
             feedback.comment = "Задача не была выполнена успешно"
             return feedback
         
-        # Оценка на основе нескольких факторов
         score = 1.0
         
-        # 1. Проверка успешности всех шагов
         if context.execution_steps:
             failed_steps = sum(
                 1 for s in context.execution_steps if not s.success
@@ -99,26 +97,23 @@ class SimpleCritic(ICriticTool):
             else:
                 feedback.detailed_scores["steps_success"] = 1.0
         
-        # 2. Оценка на основе времени выполнения
         if context.execution_steps:
             avg_time = sum(
                 s.execution_time for s in context.execution_steps
             ) / len(context.execution_steps)
             
-            if avg_time > 10.0:  # Если шаги слишком долгие
+            if avg_time > 10.0:  
                 score *= 0.9
                 feedback.detailed_scores["time_efficiency"] = 0.9
             else:
                 feedback.detailed_scores["time_efficiency"] = 1.0
         
-        # 3. Проверка наличия результата
         if context.result is None:
             score *= 0.7
             feedback.detailed_scores["result_presence"] = 0.7
         else:
             feedback.detailed_scores["result_presence"] = 1.0
-        
-        # 4. Проверка формата выхода
+
         if context.task and context.task.output_connector:
             format_ok = self.check_format_compliance(
                 context.result,

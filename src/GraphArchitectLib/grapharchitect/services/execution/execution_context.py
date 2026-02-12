@@ -9,7 +9,6 @@ from .execution_status import ExecutionStatus
 from .execution_step import ExecutionStep
 from ..selection.gradient_trace import GradientTrace
 
-# Используем TYPE_CHECKING для избежания циклических импортов
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ...entities.task_definition import TaskDefinition
@@ -54,10 +53,9 @@ class ExecutionContext:
     # Метрики
     start_time: datetime = field(default_factory=datetime.utcnow)
     end_time: Optional[datetime] = None
-    total_time: float = 0.0  # секунды
+    total_time: float = 0.0 
     total_cost: float = 0.0
     
-    # Ошибки
     error_message: str = ""
     
     def add_step(self, step: ExecutionStep):

@@ -18,7 +18,7 @@ class GraphBuilder:
     """
     
     def __init__(self):
-        self._vertex_map: Dict[str, int] = {}  # format -> vertex_id
+        self._vertex_map: Dict[str, int] = {} 
     
     def build(self, tools: List[BaseTool]) -> GraphW[ToolEdge]:
         """

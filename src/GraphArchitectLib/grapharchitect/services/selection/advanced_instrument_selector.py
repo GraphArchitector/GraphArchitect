@@ -159,7 +159,7 @@ class AdvancedInstrumentSelector:
             r_value = numerator / denominator
             r_metrics[tool_id] = r_value
         
-        # Шаг 5: Отбор топ-K по R(x)
+        # Отбор топ-K по R(x)
         sorted_items = sorted(
             r_metrics.items(),
             key=lambda x: x[1],
@@ -169,16 +169,16 @@ class AdvancedInstrumentSelector:
         top_k_ids = [tool_id for tool_id, _ in sorted_items[:top_k]]
         top_k_tools = [tool for tool in instruments if id(tool) in top_k_ids]
         
-        # Шаг 6: Вычисление температуры группы
+        # Вычисление температуры группы
         temperature = self._calculate_group_temperature(top_k_tools)
         
-        # Шаг 7: Softmax с температурой по R(x)
+        # Softmax с температурой по R(x)
         probabilities = self._apply_softmax_with_temperature(
             {tool_id: r_metrics[tool_id] for tool_id in top_k_ids},
             temperature
         )
         
-        # Шаг 8: Вероятностное сэмплирование
+        # Вероятностное сэмплирование
         selected_tool = self._sample_from_probabilities(
             top_k_tools,
             probabilities
@@ -201,7 +201,6 @@ class AdvancedInstrumentSelector:
         """
         Вычислить адаптивную температуру группы.
         
-        T = (C/K) * Σ√(D_k / m_k)
         """
         if not tools:
             return 1.0

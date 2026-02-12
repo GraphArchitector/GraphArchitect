@@ -4,7 +4,6 @@ from typing import List, Optional, Any
 from datetime import datetime
 from dataclasses import dataclass, field
 
-# Используем TYPE_CHECKING для избежания циклических импортов
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ...entities.base_tool import BaseTool
@@ -47,7 +46,6 @@ class ExecutionStep:
     # Время выполнения
     start_time: datetime = field(default_factory=datetime.utcnow)
     end_time: Optional[datetime] = None
-    execution_time: float = 0.0  # секунды
+    execution_time: float = 0.0 
     
-    # Стоимость выполнения
     cost: float = 0.0

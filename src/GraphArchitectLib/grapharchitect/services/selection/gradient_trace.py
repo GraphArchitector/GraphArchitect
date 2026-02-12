@@ -3,7 +3,6 @@
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 
-# Используем TYPE_CHECKING для избежания циклических импортов
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ...entities.base_tool import BaseTool

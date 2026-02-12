@@ -151,7 +151,6 @@ class KNNFewShotRetriever:
                     final_score=final_score
                 ))
         
-        # 4. Отсортировать и взять топ-k
         scored_examples.sort(key=lambda x: x.final_score, reverse=True)
         return scored_examples[:k]
     

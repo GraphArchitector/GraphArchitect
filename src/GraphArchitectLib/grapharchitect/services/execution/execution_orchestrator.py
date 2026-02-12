@@ -13,7 +13,6 @@ from .execution_status import ExecutionStatus
 from .execution_step import ExecutionStep
 from ..pathfinding_algorithm import PathfindingAlgorithm
 
-# TYPE_CHECKING для избежания циклических импортов
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..embedding.embedding_service import EmbeddingService
@@ -77,13 +76,11 @@ class ExecutionOrchestrator:
         )
         
         try:
-            # Создать эмбеддинг задачи если его нет
             if task.task_embedding is None and task.description:
                 task.task_embedding = self._embedding_service.embed_text(
                     task.description
                 )
             
-            # Найти стратегию (цепочку групп инструментов)
             start_format = task.input_connector.format
             end_format = task.output_connector.format
             
@@ -102,14 +99,10 @@ class ExecutionOrchestrator:
                 )
                 return context
             
-            # Берем первую стратегию
             strategy = strategies[0]
             
-            # Выполнить цепочку
-            # ИСПРАВЛЕНИЕ: передаём available_tools для выбора
             self._execute_strategy(context, strategy, task.task_embedding, top_k, available_tools)
             
-            # Установить финальный статус
             context.status = ExecutionStatus.COMPLETED
             context.result = context.current_data
             
@@ -152,13 +145,11 @@ class ExecutionOrchestrator:
         )
         
         try:
-            # Создать эмбеддинг задачи если его нет
             if task.task_embedding is None and task.description:
                 task.task_embedding = self._embedding_service.embed_text(
                     task.description
                 )
             
-            # Выполнить цепочку рёбер (инструментов)
             for i, edge in enumerate(strategy_path):
                 self._execute_instrument_group(
                     context,
@@ -198,16 +189,12 @@ class ExecutionOrchestrator:
     ):
         """
         Выполнить стратегию - последовательность групп инструментов.
-        
-        ИСПРАВЛЕНИЕ: Теперь используем available_tools для выбора,
-        а не только один инструмент из стратегии.
         """
         for i, tool in enumerate(strategy):
-            # ИСПРАВЛЕНИЕ: Передаём ВСЕ доступные инструменты для выбора
-            # вместо только одного из стратегии
+
             self._execute_instrument_group(
                 context,
-                available_tools,  # ← Все инструменты!
+                available_tools,
                 task_embedding,
                 i + 1,
                 top_k
@@ -228,14 +215,14 @@ class ExecutionOrchestrator:
         """
         Выполнить выбор и запуск инструмента из группы.
         
-        Это ключевой метод, реализующий пункт 4 из описания системы:
+        Этот метод, реализующий пункт 4 из описания системы:
         1. Формируется векторное представление задачи
         2. Этот вектор отправляется всем инструментам в группе
-        3. Получаем логиты от всех инструментов
-        4. Отбираем топ-K инструментов
-        5. Строим распределение вероятностей через softmax с температурой
+        3. Получает логиты от всех инструментов
+        4. Отбирает топ-K инструментов
+        5. Распределение вероятностей через softmax с температурой
         6. Выбираем инструмент через сэмплирование
-        7. Сохраняем градиентную информацию
+        7. Сохранение информации о градиенте
         """
         step = ExecutionStep(
             step_number=step_number,
@@ -245,7 +232,6 @@ class ExecutionOrchestrator:
         )
         
         try:
-            # Выбрать инструмент с помощью логитов и температуры
             step.selection_result = self._instrument_selector.select_instrument(
                 tools,
                 task_embedding,
@@ -254,17 +240,13 @@ class ExecutionOrchestrator:
             
             step.selected_tool = step.selection_result.selected_tool
             
-            # Сохранить информацию о градиентнтах
             context.add_gradient_trace(step.selection_result.gradient_info)
             
-            # Выполнить инструмент
             step.output_data = step.selected_tool.execute(step.input_data)
             step.success = True
             
-            # Обновить текущие данные контекста
             context.current_data = step.output_data
             
-            # Записать метрики
             step.end_time = datetime.utcnow()
             step.execution_time = (
                 step.end_time - step.start_time

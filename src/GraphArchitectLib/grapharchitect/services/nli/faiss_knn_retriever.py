@@ -16,7 +16,6 @@ from .nli_dataset_item import NLIDatasetItem
 
 logger = logging.getLogger(__name__)
 
-# Импорт Faiss
 try:
     import faiss
     import numpy as np
@@ -42,13 +41,6 @@ class FaissKNNRetriever:
     
     Использует Faiss индекс для эффективного поиска ближайших соседей.
     Поддерживает комбинированный поиск (векторный + текстовый).
-    
-    Производительность:
-    - 10 примеров: ~0.001s (как и наивный)
-    - 100 примеров: ~0.001s (10x быстрее наивного)
-    - 1,000 примеров: ~0.002s (50x быстрее)
-    - 10,000 примеров: ~0.005s (200x быстрее)
-    - 100,000+ примеров: ~0.01s (1000x быстрее)
     """
     
     def __init__(
@@ -94,13 +86,12 @@ class FaissKNNRetriever:
         Args:
             item: Элемент датасета NLI
         """
-        # Создать эмбеддинг если его нет
+
         if item.task_embedding is None and item.task_text:
             item.task_embedding = self._embedding_service.embed_text(item.task_text)
         
         self._dataset.append(item)
         
-        # Пометить что индекс нужно перестроить
         self._index_built = False
     
     def load_dataset(self, items: List[NLIDatasetItem]):
@@ -122,26 +113,23 @@ class FaissKNNRetriever:
         if not self._use_faiss or not self._dataset:
             return
         
-        # Извлекаем эмбеддинги
         embeddings = []
         for item in self._dataset:
             if item.task_embedding:
                 embeddings.append(item.task_embedding)
             else:
-                # Создаем нулевой вектор если нет эмбеддинга
                 embeddings.append([0.0] * self._embedding_service.embedding_dimension)
         
-        # Конвертируем в numpy array
         embeddings_array = np.array(embeddings, dtype='float32')
         
         dimension = embeddings_array.shape[1]
         
-        # Создаем Faiss индекс
+        # Создает Faiss индекс
         if self._index_type == "FlatIP":
             # Inner Product (косинусное сходство для нормализованных векторов)
             self._faiss_index = faiss.IndexFlatIP(dimension)
             
-            # Нормализуем векторы для корректного косинусного сходства
+            # векторы для корректного косинусного сходства
             faiss.normalize_L2(embeddings_array)
             
         elif self._index_type == "FlatL2":
@@ -158,7 +146,7 @@ class FaissKNNRetriever:
             self._faiss_index = faiss.IndexFlatIP(dimension)
             faiss.normalize_L2(embeddings_array)
         
-        # Добавляем векторы в индекс
+        # векторы добавляются в индекс
         self._faiss_index.add(embeddings_array)
         
         self._index_built = True
@@ -201,7 +189,7 @@ class FaissKNNRetriever:
         
         # Выбор метода поиска
         if self._use_faiss and len(filtered_dataset) > 20:
-            # Используем Faiss для больших датасетов
+            # Используется Faiss для больших датасетов
             return self._retrieve_with_faiss(
                 task_text,
                 task_embedding,
@@ -263,10 +251,8 @@ class FaissKNNRetriever:
             
             # Конвертируем distance в score
             if self._index_type == "FlatIP":
-                # Inner product уже similarity (0-1)
                 vector_score = float(dist)
             elif self._index_type == "FlatL2":
-                # L2 distance → similarity (инвертируем и нормализуем)
                 vector_score = 1.0 / (1.0 + float(dist))
             else:
                 vector_score = float(dist)

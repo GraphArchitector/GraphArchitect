@@ -30,7 +30,7 @@ class ConnectorInfoAggregator:
         info = AvailableConnectorInfo()
         
         for tool in tools:
-            # Обрабатываем входной коннектор
+            # Входной коннектор
             self._process_connector(
                 tool.input.data_format,
                 tool.input.semantic_format,
@@ -38,7 +38,7 @@ class ConnectorInfoAggregator:
                 is_input=True
             )
             
-            # Обрабатываем выходной коннектор
+            # Выходной коннектор
             self._process_connector(
                 tool.output.data_format,
                 tool.output.semantic_format,
@@ -64,7 +64,7 @@ class ConnectorInfoAggregator:
             info: Агрегированная информация
             is_input: True если входной коннектор
         """
-        # Определяем тип (file или structured)
+
         if data_format.startswith("file."):
             # Это файл
             file_ext = data_format.replace("file.", "")

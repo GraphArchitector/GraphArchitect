@@ -16,7 +16,6 @@ class FeedbackCollector:
     (пользователи, автоматические критики, системные метрики).
     """
     
-    # Хранилище обратной связи: task_id -> список feedback
     _feedbacks: Dict[UUID, List[FeedbackData]] = field(default_factory=dict)
     
     def add_feedback(self, feedback: FeedbackData):

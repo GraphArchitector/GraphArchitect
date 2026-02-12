@@ -166,7 +166,6 @@ class GraphStrategyFinder:
         """
         strategy = []
         for edge in edges:
-            # Выбираем лучший инструмент из группы
             best_tool = max(
                 edge.tools,
                 key=lambda t: t.metadata.reputation

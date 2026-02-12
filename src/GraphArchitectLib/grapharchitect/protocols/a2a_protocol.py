@@ -47,7 +47,6 @@ class AgentCard:
     capabilities: List[str]
     endpoint: str  # URL для взаимодействия
     
-    # Опциональные поля
     version: str = "1.0.0"
     supported_formats: List[str] = field(default_factory=list)
     authentication: Dict[str, str] = field(default_factory=dict)
@@ -95,12 +94,10 @@ class A2ATask:
     user_message: str
     status: TaskStatus = TaskStatus.PENDING
     
-    # Контекст и результаты
     context: Dict[str, Any] = field(default_factory=dict)
     messages: List[Dict[str, Any]] = field(default_factory=list)
     artifact: Optional[Any] = None
     
-    # Метаданные
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     assigned_agent: Optional[str] = None
@@ -186,7 +183,6 @@ class A2AClient:
         try:
             import requests
             
-            # Отправка задачи агенту
             response = requests.post(
                 f"{self._agent_card.endpoint}/tasks",
                 json=task.to_dict(),
