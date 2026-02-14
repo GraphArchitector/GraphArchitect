@@ -307,8 +307,6 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 ## Ссылки
 
 - **Туториалы**: [tutorials/START_HERE.md](tutorials/START_HERE.md)
-- **Web API**: [src/GraphArchitectLib/Web/README_FINAL.md](src/GraphArchitectLib/Web/README_FINAL.md)
-- **Интеграции**: [integrations/README.md](integrations/README.md)
 - **Примеры**: [examples/](examples/)
 
 ---
