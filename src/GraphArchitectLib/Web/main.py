@@ -101,15 +101,14 @@ async def home(request: Request):
     templates_list = get_all_templates()
     repo = get_repository()
     agents = repo.get_all_agents()
-    
-    # Convert agents to simple format for frontend
+
     agents_list = [
         {
             "name": agent.name,
             "color": agent.color,
             "desc": "Available"
         }
-        for agent in agents[:5]  # Show first 5
+        for agent in agents[:5]
     ]
     
     return templates.TemplateResponse("index.html", {
@@ -261,7 +260,6 @@ async def chat_stream_gui(
         # Get stream from service and convert to HTML
         async for chunk in chat_service.process_message_stream(msg_request):
             if chunk.type == "workflow":
-                # Parse workflow and send only agents array
                 workflow_data = json.loads(chunk.content)
                 agents_json = json.dumps(workflow_data.get('agents', []))
                 yield f'<span data-workflow-agents=\'{agents_json}\' style="display:none;"></span>'
@@ -272,11 +270,9 @@ async def chat_stream_gui(
                 yield f'<strong>{chunk.content}</strong><br><br>'
             
             elif chunk.type == "agent_complete":
-                # Agent complete marker
                 yield f'<span data-agent-complete="{chunk.agent_id}" style="display:none;"></span>'
             
             elif chunk.type == "text":
-                # Text content
                 yield chunk.content
         
         yield '</div></div>'

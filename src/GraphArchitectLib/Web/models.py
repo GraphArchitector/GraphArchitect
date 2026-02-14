@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-# ============== Tool/Agent models ==============
+# ============== Инструменты ==============
 
 class Agent(BaseModel):
-    """Tool/Agent in processing chain."""
+    """Tool in processing chain."""
     id: str
     name: str
     icon: str
@@ -44,7 +44,7 @@ class WorkflowStep(BaseModel):
     status: Literal["pending", "in_progress", "completed", "failed"] = "pending"
     phase: Optional[Literal["selection", "executing", "completed"]] = None
     
-    # Агенты-кандидаты для этого шага (выбирается 1 из N)
+    # Инструменты-кандидаты для этого шага (выбирается 1 из N)
     candidate_agents: List[str] = Field(default_factory=list, alias="candidateAgents")
     
     # Выбранный агент (после конкурентного отбора)
@@ -53,7 +53,7 @@ class WorkflowStep(BaseModel):
     # Критерии выбора агента
     selection_criteria: SelectionCriteria = Field(default_factory=SelectionCriteria, alias="selectionCriteria")
     
-    # Прогресс кандидатов (для real-time обновлений)
+    # Прогресс отбора кандидатов (для real-time обновлений)
     candidates_progress: List[CandidateProgress] = Field(default_factory=list, alias="candidatesProgress")
     
     # Результат выполнения

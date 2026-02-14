@@ -248,7 +248,7 @@ class WorkflowVisualizer {
         if (text.includes('data:image') && text.length > 2000000) {
             console.warn('[WARN] Image data URL too large for Chrome:', text.length, 'bytes');
             msgDiv.innerHTML = `<strong>${agentName}:</strong><br><div class="markdown-content">
-                <p style="color: #ef4444;">⚠️ Изображение слишком большое для отображения в браузере (${(text.length/1024/1024).toFixed(2)} MB)</p>
+                <p style="color: #ef4444;"> Изображение слишком большое для отображения в браузере (${(text.length/1024/1024).toFixed(2)} MB)</p>
                 <p>Лимит Chrome: ~2MB для data URL. Попробуйте запросить изображение меньшего размера.</p>
             </div>`;
             chatMessages.appendChild(msgDiv);
@@ -495,7 +495,7 @@ class WorkflowVisualizer {
             });
         }
         
-        this.addLog('info', `📍 Шаг ${data.stepIndex + 1}: ${data.stepName}`);
+        this.addLog('info', `Шаг ${data.stepIndex + 1}: ${data.stepName}`);
     }
     
     onAgentProgress(data) {

@@ -38,7 +38,7 @@ async def create_workflow(
     use_streaming: bool = Form(True)
 ):
     """
-    Создать цепочку агентов для чата (Генерация графа)
+    Создать цепочку инструментов для чата (Генерация графа)
     """
     file_list = []
     if files:

@@ -189,7 +189,7 @@ def top_k_values(request):
 def pytest_sessionstart(session):
     """Вызывается при старте тестовой сессии"""
     print("\n" + "="*70)
-    print("🧪 ЗАПУСК ТЕСТОВ GRAPHARCHITECT")
+    print("ЗАПУСК ТЕСТОВ GRAPHARCHITECT")
     print("="*70)
     print(f"Python version: {sys.version.split()[0]}")
     print(f"Pytest version: {pytest.__version__}")
@@ -200,7 +200,7 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session, exitstatus):
     """Вызывается при завершении тестовой сессии"""
     print("\n" + "="*70)
-    print("🏁 ТЕСТЫ ЗАВЕРШЕНЫ")
+    print("ТЕСТЫ ЗАВЕРШЕНЫ")
     print("="*70)
     
     if exitstatus == 0:
@@ -246,7 +246,7 @@ def coverage_report(request):
     # После всех тестов
     if request.config.getoption("--cov", default=None):
         print("\n" + "="*70)
-        print("📊 ОТЧЕТ О ПОКРЫТИИ КОДА")
+        print("ОТЧЕТ О ПОКРЫТИИ КОДА")
         print("="*70)
         print("Детальный отчет будет сохранен в htmlcov/index.html")
         print("="*70 + "\n")

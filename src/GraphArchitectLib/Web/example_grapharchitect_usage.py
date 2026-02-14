@@ -1,11 +1,11 @@
 """
-Examples of using Web API with GraphArchitect integration.
+Примеры использования Web API с интеграцией GraphArchitect.
 
-Demonstrates:
-- Real tool selection via softmax
-- Strategy finding with different algorithms
-- Training based on feedback
-- Getting tool metrics
+Демонстрирует:
+- Реальный выбор инструмента с помощью softmax
+- Поиск стратегии с использованием различных алгоритмов
+- Обучение на основе обратной связи
+- Получение метрик инструмента
 """
 
 import requests

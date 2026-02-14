@@ -1,7 +1,6 @@
 """
 Продвинутый селектор инструментов с полной формулой R(x).
 
-Реализует формулу из отчета:
 R(x) = (t_sc · (w_q · f_q(x) - w_c · f_c(x))) / log₁₀(w_t · f_t(x) + 1)
 
 Где:
@@ -51,9 +50,9 @@ class AdvancedInstrumentSelector:
     def __init__(
         self,
         scale_coefficient: float = 1.0,
-        weight_quality: float = 1.0,
-        weight_cost: float = 0.3,
-        weight_time: float = 0.2,
+        weight_quality: float = 0.5,
+        weight_cost: float = 0.25,
+        weight_time: float = 0.25,
         temperature_constant: float = 1.0
     ):
         """
@@ -112,7 +111,7 @@ class AdvancedInstrumentSelector:
             tool_id = id(tool)
             logits[tool_id] = logit
         
-        # Шаг 2: Вычисление стоимостей
+        # Вычисление стоимостей
         costs = {}
         for tool in instruments:
             cost = tool.metadata.mean_cost
@@ -124,19 +123,19 @@ class AdvancedInstrumentSelector:
             if max_cost > 0:
                 costs = {k: v / max_cost for k, v in costs.items()}
         
-        # Шаг 3: Вычисление времен
+        # Вычисление времен
         times = {}
         for tool in instruments:
             time = tool.metadata.mean_time_answer
             times[id(tool)] = time
         
-        # Нормализация времен
+        # Нормализация времени выполнения
         if normalize_times and times:
             max_time = max(times.values()) if times.values() else 1.0
             if max_time > 0:
                 times = {k: v / max_time for k, v in times.items()}
         
-        # Шаг 4: Вычисление R(x) для каждого инструмента
+        # Вычисление R(x) для каждого инструмента
         r_metrics = {}
         for tool in instruments:
             tool_id = id(tool)
@@ -144,8 +143,7 @@ class AdvancedInstrumentSelector:
             quality = logits[tool_id]
             cost = costs[tool_id]
             time = times[tool_id]
-            
-            # Формула из отчета:
+
             # R(x) = (t_sc · (w_q · f_q - w_c · f_c)) / log₁₀(w_t · f_t + 1)
             
             numerator = self._scale_coef * (
@@ -282,3 +280,9 @@ class AdvancedInstrumentSelector:
         
         # Fallback на последний (на случай ошибок округления)
         return tools[-1]
+
+    def _sample_tool(self, tools: List[BaseTool], probabilities: Dict[int, float]) -> BaseTool:
+        tools_id = list(probabilities.keys())
+        weights = list(probabilities.values())
+        tool_id = self._random.choices(tools_id, weights=weights, k=1)[0]
+        return tools[tool_id]

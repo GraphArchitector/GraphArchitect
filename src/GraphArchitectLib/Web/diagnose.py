@@ -1,5 +1,5 @@
 """
-Diagnostic script for GraphArchitect Web API issues.
+Диагностический скрипт для выявления проблем с веб-API GraphArchitect.
 """
 import sys
 import os

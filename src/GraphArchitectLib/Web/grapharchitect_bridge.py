@@ -1,11 +1,11 @@
 """
-Bridge between Web API and GraphArchitect library.
+Мост между веб-API и библиотекой GraphArchitect.
 
-This module integrates GraphArchitect functionality into Web API:
-- Agent to BaseTool conversion
-- Real graph strategy search
-- Tool selection via softmax with temperature
-- Execution streaming with gradient traces
+Этот модуль интегрирует функциональность GraphArchitect в веб-API:
+- Преобразование агента в базовый инструмент
+- Поиск стратегии на реальном графе
+- Выбор инструмента с помощью функции softmax с учетом температуры
+- Потоковая передача результатов выполнения с трассировкой градиента
 """
 
 import sys

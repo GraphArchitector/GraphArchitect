@@ -21,8 +21,8 @@ def get_repository():
     try:
         from sqlite_repository import SQLiteRepository
         repo = SQLiteRepository()
-        logger.info("Using SQLite repository")
+        # logger.info("Using SQLite repository")
         return repo
     except Exception as e:
-        logger.error(f"Failed to initialize SQLite repository: {e}")
+        # logger.error(f"Failed to initialize SQLite repository: {e}")
         raise RuntimeError("Database initialization failed. Run: python db_manager.py init")
