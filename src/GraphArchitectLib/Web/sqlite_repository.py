@@ -162,7 +162,7 @@ class SQLiteRepository:
             ))
             
             # Обновляем активность чата
-            self.update_chat_activity(workflow.chat_id)
+            self.update_chat_activity(workflow.chat_id, conn)
             
             return workflow
     
@@ -267,7 +267,7 @@ class SQLiteRepository:
             ))
             
             # Обновляем активность чата
-            self.update_chat_activity(document.chat_id)
+            self.update_chat_activity(document.chat_id, conn)
             
             return document
     
@@ -311,21 +311,37 @@ class SQLiteRepository:
         )
     
     # ============== Работа с чатами ==============
-    
-    def create_chat(self, chat_id: str, title: Optional[str] = None) -> ChatInfo:
-        """Создать новый чат"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            
-            now = datetime.now().isoformat()
-            
-            cursor.execute("""
-                INSERT OR IGNORE INTO chats (chat_id, title, created_at, last_activity)
-                VALUES (?, ?, ?, ?)
-            """, (chat_id, title, now, now))
-            
-            # Получаем созданный чат
-            return self.get_chat(chat_id)
+    def create_chat(self, chat_id: str, conn=None, title=None):
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                self._create_chat(chat_id, new_conn, title)
+        else:
+            self._create_chat(chat_id, conn, title)
+
+
+    def _create_chat(self, chat_id, conn, title):
+        cursor = conn.cursor()
+        now = datetime.now().isoformat()
+
+        cursor.execute("""
+            INSERT OR IGNORE INTO chats (chat_id, title, created_at, last_activity)
+            VALUES (?, ?, ?, ?)
+        """, (chat_id, title, now, now))
+
+    #def create_chat(self, chat_id: str, title: Optional[str] = None) -> ChatInfo:
+    #    """Создать новый чат"""
+    #    with self.db.get_connection() as conn:
+    #        cursor = conn.cursor()
+    #        
+    #        now = datetime.now().isoformat()
+    #        
+    #        cursor.execute("""
+    #            INSERT OR IGNORE INTO chats (chat_id, title, created_at, last_activity)
+    #            VALUES (?, ?, ?, ?)
+    #        """, (chat_id, title, now, now))
+    #        
+    #        # Получаем созданный чат
+    #        return self.get_chat(chat_id)
     
     def get_chat(self, chat_id: str) -> Optional[ChatInfo]:
         """Получить информацию о чате"""
@@ -353,19 +369,23 @@ class SQLiteRepository:
                 documents=documents
             )
     
-    def update_chat_activity(self, chat_id: str):
-        """Обновить время последней активности"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            
-            # Создаем чат если не существует
-            cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
-            if not cursor.fetchone():
-                self.create_chat(chat_id)
-            else:
-                cursor.execute("""
-                    UPDATE chats SET last_activity = ? WHERE chat_id = ?
-                """, (datetime.now().isoformat(), chat_id))
+    def update_chat_activity(self, chat_id: str, conn=None):
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                self._update_chat_activity(chat_id, new_conn)
+        else:
+            self._update_chat_activity(chat_id, conn)
+
+    def _update_chat_activity(self, chat_id: str, conn):
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
+        if not cursor.fetchone():
+            self.create_chat(chat_id, conn)
+        else:
+            cursor.execute("""
+                UPDATE chats SET last_activity = ? WHERE chat_id = ?
+            """, (datetime.now().isoformat(), chat_id))
     
     def list_chats(self) -> List[ChatInfo]:
         """Получить список всех чатов"""

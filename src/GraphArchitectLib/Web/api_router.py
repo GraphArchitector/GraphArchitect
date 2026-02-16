@@ -242,6 +242,7 @@ async def upload_document(
         return document
     
     except Exception as e:
+        logger.exception("upload_document")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error uploading document: {str(e)}"

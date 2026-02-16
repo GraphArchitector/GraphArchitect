@@ -30,6 +30,7 @@
 
 ```bash
 cd src/GraphArchitectLib/Web
+pip install -r requirements.txt
 
 # Инициализация
 python db_manager.py init
