@@ -82,7 +82,7 @@ python main.py
 1. [Системы эмбеддингов](deployment/01_embedding_systems.md) - 45 мин
 2. [Production Deployment](deployment/02_production_deployment.md) - 50 мин
 
-**Время**: 90 минут  
+**Время**: 95 минут  
 **Результат**: Production-ready система
 
 ---
@@ -95,7 +95,7 @@ tutorials/
 │
 ├── beginner/              # 4 туториала (60 мин)
 ├── intermediate/          # 2 туториала (60 мин)
-├── deployment/            # 2 туториала (90 мин)
+├── deployment/            # 2 туториала (95 мин)
 └── workflows/             # 4 сценария (105 мин)
 ```
 
@@ -113,7 +113,7 @@ tutorials/
 
 ---
 
-**Общее время**: 315 минут (~5 часов материала)  
+**Общее время**: 320 минут (~5 часов материала)  
 **Уровней**: 3 (Beginner, Intermediate)  
 **Workflows**: 4 готовых сценария  
 
