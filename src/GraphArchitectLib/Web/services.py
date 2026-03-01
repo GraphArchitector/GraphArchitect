@@ -133,7 +133,9 @@ class ChatService:
             logger.info(f"Mode: GraphArchitect (real algorithms, ReWOO={use_rewoo_flag})")
             
             bridge = get_bridge()
-            
+            start_time = datetime.now()
+            selected_tools = []
+
             async for chunk in bridge.execute_task_streaming(
                 message=request.message,
                 input_data=request.message,
@@ -144,7 +146,25 @@ class ChatService:
                 max_cost=getattr(request, 'max_cost', None),
                 max_time=getattr(request, 'max_time', None)
             ):
+                if chunk.type == "agent_selected" and chunk.agent_id:
+                    selected_tools.append(chunk.agent_id)
                 yield chunk
+
+            self.repo.save_execution(
+                execution_id=str(uuid.uuid4()),
+                task_id=str(uuid.uuid4()),
+                chat_id=request.chat_id,
+                task_description=request.message,
+                input_format="text",
+                output_format="text",
+                algorithm_used=request.planning_algorithm,
+                status="COMPLETED",
+                selected_tools=selected_tools,
+                gradient_traces=[],
+                result=None,
+                total_time=(datetime.now() - start_time).total_seconds(),
+                total_cost=0.0
+            )
         
         else:
             # SIMULATION (fallback if GraphArchitect not available)
@@ -264,7 +284,23 @@ class ChatService:
         response_text = f"Processed by {len(workflow.agents)} agents. Result ready."
         
         processing_time = (datetime.now() - start_time).total_seconds()
-        
+
+        self.repo.save_execution(
+            execution_id=str(uuid.uuid4()),
+            task_id=str(uuid.uuid4()),
+            chat_id=request.chat_id,
+            task_description=request.message,
+            input_format="text",
+            output_format="text",
+            algorithm_used=getattr(request, 'planning_algorithm', 'yen_5'),
+            status="COMPLETED",
+            selected_tools=[a.id for a in workflow.agents],
+            gradient_traces=[],
+            result=response_text,
+            total_time=processing_time,
+            total_cost=0.0
+        )
+
         return MessageResponse(
             chat_id=request.chat_id,
             message=request.message,

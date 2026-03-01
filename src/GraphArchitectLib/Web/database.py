@@ -11,6 +11,17 @@ Tables:
 - tool_metrics - tool metrics
 """
 
+import sys
+import logging
+from pathlib import Path
+
+# Add path to grapharchitect
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from grapharchitect.entities.connectors.connector import Connector, ANY_SEMANTIC
+
+import copy
 import sqlite3
 import json
 import logging
@@ -18,6 +29,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 from pathlib import Path
 from contextlib import contextmanager
+
 
 logger = logging.getLogger(__name__)
 
@@ -208,6 +220,7 @@ class Database:
             
             # Проверяем сколько агентов уже в БД
             default_agents = self._get_default_agents()
+            default_agents = self._get_expanded_agents(default_agents)
             
             # Вставляем отсутствующих агентов (INSERT OR IGNORE)
             inserted = 0
@@ -239,6 +252,37 @@ class Database:
                 logger.info(f"Added {inserted} new tools (total: {total})")
             else:
                 logger.info(f"Database has {total} tools, all up to date")
+            
+    def _get_expanded_agents(self, agents):
+        """
+        Для каждого агента создаёт копии со всеми возможными типами коннекторов,
+        кроме тех, что связаны с обработкой изображений.
+        """
+
+        # Типы коннекторов, которые нужно исключить
+        excluded_types = {
+            "image_generation",
+            "image_processing", 
+            "text_extraction"  
+        }
+        
+        expanded_agents = []
+        
+        for agent in agents:
+            for conn_type, _ in connector_mappings.items():
+                if conn_type == agent.type:
+                    expanded_agents.append(agent)
+                    continue
+                if conn_type in excluded_types:
+                    continue
+                new_agent = copy.deepcopy(agent)
+                new_agent.id = f"{agent.id}-{conn_type}"
+                new_agent.type = conn_type
+                #new_agent.connectors = connectors
+                new_agent.name = f"{agent.name} [{conn_type}]"
+                expanded_agents.append(new_agent)
+                
+        return expanded_agents
     
     def _get_default_agents(self):
         """Получить список дефолтных агентов для первоначальной загрузки."""
@@ -404,3 +448,100 @@ def get_database(db_path: str = "grapharchitect.db", insert_default_agent = True
             _database.insert_default_agents()
     
     return _database
+
+
+connector_mappings = {
+    "classification": (
+        Connector("text", "question"),
+        Connector("text", "category")
+    ),
+    "content_generation": (
+        Connector("text", "outline"),
+        Connector("text", "content")
+    ),
+    "quality_assurance": (
+        Connector("text", "content"),
+        Connector("text", "validated")
+    ),
+    "research": (
+        Connector("text", "query"),
+        Connector("text", "findings")
+    ),
+    "planning": (
+        Connector("text", "topic"),
+        Connector("text", "outline")
+    ),
+    "writing": (
+        Connector("text", "outline"),
+        Connector("text", "article")
+    ),
+    "editing": (
+        Connector("text", "draft"),
+        Connector("text", "polished")
+    ),
+    "code_analysis": (
+        Connector("text", "code"),
+        Connector("text", "analysis")
+    ),
+    "reporting": (
+        Connector("text", "data"),
+        Connector("text", "report")
+    ),
+    "image_generation": (
+        Connector("text", ANY_SEMANTIC),
+        Connector("image", ANY_SEMANTIC)
+    ),
+    "image_processing": (
+        Connector("image", "raw"),
+        Connector("text", "description")
+    ),
+    "text_extraction": (
+        Connector("image", "raw"),
+        Connector("text", "extracted")
+    ),
+    # Дополнительные маппинги для новых типов
+    "parsing": (
+        Connector("text", "raw"),
+        Connector("text", "parsed")
+    ),
+    "analysis": (
+        Connector("text", "question"),
+        Connector("text", "analysis")
+    ),
+    "qa": (
+        Connector("text", "question"),
+        Connector("text", "answer")
+    ),
+    "universal": (
+        Connector("text", "question"),
+        Connector("text", "answer")
+    ),
+    "draft": (
+            Connector("text", "draft"),
+            Connector("text", "answer")
+    ),
+    "draft_article": (
+            Connector("text", "draft"),
+            Connector("text", "article")
+    ),
+    "draft_text": (
+            Connector("text", "draft"),
+            Connector("text", "article")
+    ),
+    #"drafta": (
+    #        Connector("text", "answer"),
+    #        Connector("text", "draft"),
+    #),
+    #"draft_articlea": (
+    #        Connector("text", "article"),
+    #        Connector("text", "draft"),
+    #),
+    #"draft_texta": (
+    #        Connector("text", "article"),
+    #        Connector("text", "draft"),
+    #),
+    "draft_texta": (
+            Connector("text", "article"),
+            Connector("text", "draft"),
+    ),
+}

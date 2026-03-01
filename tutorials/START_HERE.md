@@ -36,6 +36,8 @@ python main.py
 
 Откройте: `http://localhost:8000`
 
+Вставьте ключ OpenRouter
+
 Отправьте: `"Классифицировать этот текст"`
 
 ---
@@ -97,7 +99,7 @@ tutorials/
 ├── TUTORIAL_GUIDE.md      # Руководство
 ├── QUICK_REFERENCE.md     # Справочник
 │
-├── beginner/              # 5 туториалов (75 мин)
+├── beginner/              # 4 туториала (60 мин)
 ├── intermediate/          # 5 туториалов (150 мин)
 ├── advanced/              # 5 туториалов (200 мин)
 └── workflows/             # 6 сценариев (150 мин)

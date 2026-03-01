@@ -337,34 +337,6 @@ else:
 
 ---
 
-## Расширенные сценарии
-
-### Мультиязычная поддержка
-
-```python
-# Определение языка
-[Language Detector] → ...
-
-# Перевод если нужно
-if detected_language != "ru":
-    [Translator] → [Classifier] → [Responder] → [Translator] → [QA]
-else:
-    [Classifier] → [Responder] → [QA]
-```
-
-### Эскалация сложных случаев
-
-```python
-if complexity_score > 0.8 or sentiment == "very_negative":
-    # Эскалация человеку
-    add_to_human_queue()
-else:
-    # Автоматическая обработка
-    execute_workflow()
-```
-
----
-
 ## Итоги
 
 ### Вы создали

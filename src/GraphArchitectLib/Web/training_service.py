@@ -102,7 +102,6 @@ class TrainingService:
     async def get_statistics(self) -> Dict[str, Any]:
         """
         Получить статистику обучения.
-        
         Returns:
             Словарь со статистикой:
             - total_executions: количество выполнений
@@ -111,30 +110,50 @@ class TrainingService:
             - average_time: среднее время
             - average_cost: средняя стоимость
         """
-        if not self.enabled:
+        #stats = self.bridge.get_training_statistics()
+        try:
+            from repository import get_repository
+            repo = get_repository()
+            db_stats = repo.get_execution_statistics()
+            return {
+                "enabled": False,
+                "source": "sqlite",
+                "total_executions": db_stats["total_executions"],
+                "average_quality": round(db_stats["average_quality"], 3),
+                "success_rate": round(db_stats["success_rate"], 3),
+                "average_execution_time": round(db_stats["average_time"], 3),
+                "average_cost": round(db_stats["average_cost"], 3)
+            }
+        except Exception as e:
+            logger.error(f"Error reading SQLite statistics: {e}")
             return {
                 "enabled": False,
                 "message": "Training service не активен"
             }
+
+        #if not self.enabled:
+        #    return {
+        #        "enabled": False,
+        #        "message": "Training service не активен"
+        #    }
         
-        try:
-            stats = self.bridge.get_training_statistics()
-            
-            return {
-                "enabled": True,
-                "total_executions": stats.total_executions,
-                "average_quality": round(stats.average_quality, 3),
-                "success_rate": round(stats.success_rate, 3),
-                "average_execution_time": round(stats.average_execution_time, 3),
-                "average_cost": round(stats.average_cost, 3)
-            }
+        #try:
+        #    stats = self.bridge.get_training_statistics()
+        #    return {
+        #        "enabled": True,
+        #        "total_executions": stats.total_executions,
+        #        "average_quality": round(stats.average_quality, 3),
+        #        "success_rate": round(stats.success_rate, 3),
+        #        "average_execution_time": round(stats.average_execution_time, 3),
+        #        "average_cost": round(stats.average_cost, 3)
+        #    }
         
-        except Exception as e:
-            logger.error(f"Error getting statistics: {e}")
-            return {
-                "enabled": True,
-                "error": str(e)
-            }
+        #except Exception as e:
+        #    logger.error(f"Error getting statistics: {e}")
+        #    return {
+        #        "enabled": True,
+        #        "error": str(e)
+        #    }
     
     async def get_tool_metrics(self, agent_id: str) -> Optional[Dict[str, Any]]:
         """

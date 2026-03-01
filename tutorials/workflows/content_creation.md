@@ -82,6 +82,7 @@
 
 ```python
 import requests
+import json
 
 def create_article_simple(topic):
     """
@@ -118,6 +119,9 @@ print(article)
 ### Полный вариант (5 шагов)
 
 ```python
+import requests
+import json
+
 def create_article_full(topic, target_audience="general", tone="professional"):
     """
     Полный workflow с настройкой под аудиторию.
@@ -188,6 +192,7 @@ article = create_article_full(
     target_audience="medical_professionals",
     tone="technical"
 )
+print(article)
 ```
 
 ---
@@ -246,9 +251,12 @@ print(f"Успешность: {stats['success_rate']:.1%}")
 
 ## Масштабирование
 
-### Batch обработка
+### Параллельное выполнение
 
 ```python
+import asyncio
+import aiohttp
+
 topics = [
     "AI в здравоохранении",
     "Blockchain технологии",
@@ -256,24 +264,6 @@ topics = [
     "IoT и умные города",
     "Кибербезопасность в 2026"
 ]
-
-articles = []
-for topic in topics:
-    article = create_article_simple(topic)
-    articles.append({
-        "topic": topic,
-        "content": article,
-        "created_at": datetime.now()
-    })
-    
-print(f"Создано статей: {len(articles)}")
-```
-
-### Параллельное выполнение
-
-```python
-import asyncio
-import aiohttp
 
 async def create_article_async(session, topic):
     async with session.post(
@@ -287,7 +277,7 @@ async def create_multiple_articles(topics):
         tasks = [create_article_async(session, topic) for topic in topics]
         return await asyncio.gather(*tasks)
 
-# Создать 10 статей параллельно
+# Создать 5 статей параллельно
 articles = asyncio.run(create_multiple_articles(topics))
 ```
 

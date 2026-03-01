@@ -147,16 +147,43 @@ class AgentTool(BaseTool):
                 Connector("text", "answer")
             ),
             "universal": (
-                Connector("text", "question"),
-                Connector("text", "answer")
+                #Connector("text", "question"),
+                #Connector("text", "answer")
+                Connector("text", ANY_SEMANTIC),
+                Connector("text", ANY_SEMANTIC),
             ),
+    #"draft": (
+    #        Connector("text", "draft"),
+    #        Connector("text", "answer")
+    #),
+    #"draft_article": (
+    #        Connector("text", "draft"),
+    #        Connector("text", "article")
+    #),
+    #"draft_text": (
+    #        Connector("text", "draft"),
+    #        Connector("text", "article")
+    #),
+    #"drafta": (
+    #        Connector("text", "answer"),
+    #        Connector("text", "draft"),
+    #),
+    #"draft_articlea": (
+    #        Connector("text", "article"),
+    #        Connector("text", "draft"),
+    #),
+    #"draft_texta": (
+    #        Connector("text", "article"),
+    #        Connector("text", "draft"),
+    #),
         }
-        
         # Получаем маппинг или используем универсальный question→answer
-        return connector_mappings.get(
-            agent.type,
-            (Connector("text", "question"), Connector("text", "answer"))
-        )
+        #return connector_mappings.get(
+        #    agent.type,
+        #    (Connector("text", "question"), Connector("text", "answer"))
+        #)
+
+        return  (Connector("text", "parsed"), Connector("text", "analysis"))
     
     def execute(self, input_data):
         """
