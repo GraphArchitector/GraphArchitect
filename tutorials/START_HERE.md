@@ -114,7 +114,7 @@ tutorials/
 ---
 
 **Общее время**: 320 минут (~5 часов материала)  
-**Уровней**: 3 (Beginner, Intermediate)  
+**Уровней**: 3 (Beginner, Intermediate, Deployment)  
 **Workflows**: 4 готовых сценария  
 
 **Готовы начать**: [Quick Start](beginner/01_quick_start.md)
