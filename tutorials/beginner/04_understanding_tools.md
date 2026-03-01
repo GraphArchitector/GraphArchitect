@@ -454,4 +454,4 @@ curl http://localhost:8000/api/training/tools/agent-my-tool
 
 ---
 
-**Следующий**: [Простое использование API](05_simple_api_usage.md)
+**Следующий**: [Алгоритмы графа](/tutorials/intermediate/01_graph_algorithms.md)

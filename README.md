@@ -30,6 +30,7 @@
 
 ```bash
 cd src/GraphArchitectLib/Web
+pip install -r requirements.txt
 
 # Инициализация
 python db_manager.py init
@@ -63,11 +64,11 @@ GraphArchitect/
 │   │
 │   └── Tests/                  
 │
-├── tutorials/                   # 21 туториал
-│   ├── beginner/               # 5 туториалов
-│   ├── intermediate/           # 5 туториалов
-│   ├── advanced/               # 5 туториалов
-│   └── workflows/              # 6 сценариев
+├── tutorials/                  
+│   ├── beginner/               # 4 туториала
+│   ├── intermediate/           # 2 туториала
+│   ├── deployment/             # 2 туториала
+│   └── workflows/              # 4 сценария
 │
 ├── integrations/                # Интеграции
 │   └── langchain/              # LangChain
@@ -153,35 +154,28 @@ GraphArchitect/
 
 - [Graph Algorithms](tutorials/intermediate/01_graph_algorithms.md)
 - [Tool Selection](tutorials/intermediate/02_tool_selection.md)
-- [Custom Tools](tutorials/intermediate/05_custom_tools.md)
 
 ### Готовые сценарии
 
 - [Customer Support](tutorials/workflows/customer_support.md)
 - [Content Creation](tutorials/workflows/content_creation.md)
-- [Data Analysis](tutorials/workflows/data_analysis.md)
 - [Code Review](tutorials/workflows/code_review.md)
 
 ### Для production
 
-- [Embedding Systems](tutorials/advanced/01_embedding_systems.md)
+- [Embedding Systems](tutorials/deployment/01_embedding_systems.md)
 - [Production Deployment](tutorials/deployment/02_production_deployment.md)
-- [Performance Tuning](tutorials/advanced/02_performance_tuning.md)
 
 ---
 
 ## API
 
-### REST Endpoints (16)
+### REST Endpoints
 
 ```bash
 # Workflow
 POST /api/chat/{id}/workflow
 POST /api/chat/{id}/message/stream
-
-# Training
-POST /api/training/feedback
-GET  /api/training/statistics
 
 # Health
 GET  /api/health
@@ -304,11 +298,4 @@ curl -X POST http://localhost:8000/api/chat/demo/message/stream \
 
 ---
 
-## Ссылки
-
-- **Туториалы**: [tutorials/START_HERE.md](tutorials/START_HERE.md)
-- **Примеры**: [examples/](examples/)
-
----
-
-**Начните с**: [tutorials/START_HERE.md](tutorials/START_HERE.md)
+**Начните с**: [tutorials](tutorials/START_HERE.md)

@@ -3,8 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+demo
 grapharchitect.db
+connectors_standards.db
 src/GraphArchitectLib/Web/uploads
+
+demo
 
 # C extensions
 *.so

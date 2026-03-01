@@ -162,31 +162,49 @@ class SQLiteRepository:
             ))
             
             # Обновляем активность чата
-            self.update_chat_activity(workflow.chat_id)
+            self.update_chat_activity(workflow.chat_id, conn)
             
             return workflow
     
-    def get_workflow(self, chat_id: str) -> Optional[WorkflowChain]:
+    def get_workflow(self, chat_id: str, conn=None) -> Optional[WorkflowChain]:
         """Получить цепочку агентов по ID чата"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM workflows WHERE chat_id = ?",
-                (chat_id,)
-            )
-            row = cursor.fetchone()
-            
-            if not row:
-                return None
-            
-            return self._row_to_workflow(row)
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                return self._get_workflow(chat_id, new_conn)
+        else:
+            return self._get_workflow(chat_id, conn)
+
+
+    def _get_workflow(self, chat_id: str, conn) -> Optional[WorkflowChain]:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM workflows WHERE chat_id = ?",
+            (chat_id,)
+        )
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return self._row_to_workflow(row)
+
     
-    def delete_workflow(self, chat_id: str) -> bool:
+    def delete_workflow(self, chat_id: str, conn=None) -> bool:
         """Удалить цепочку агентов"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM workflows WHERE chat_id = ?", (chat_id,))
-            return cursor.rowcount > 0
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                return self._delete_workflow(chat_id, new_conn)
+        else:
+            return self._delete_workflow(chat_id, conn)
+
+
+    def _delete_workflow(self, chat_id: str, conn) -> bool:
+        cursor = conn.cursor()
+        cursor.execute(
+            "DELETE FROM workflows WHERE chat_id = ?",
+            (chat_id,)
+        )
+        return cursor.rowcount > 0
     
     def _row_to_workflow(self, row) -> WorkflowChain:
         """Конвертировать строку БД в WorkflowChain"""
@@ -267,36 +285,50 @@ class SQLiteRepository:
             ))
             
             # Обновляем активность чата
-            self.update_chat_activity(document.chat_id)
+            self.update_chat_activity(document.chat_id, conn)
             
             return document
     
-    def get_documents(self, chat_id: str) -> List[DocumentInfo]:
+    def get_documents(self, chat_id: str, conn=None) -> List[DocumentInfo]:
         """Получить все документы чата"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM documents WHERE chat_id = ? ORDER BY uploaded_at DESC",
-                (chat_id,)
-            )
-            rows = cursor.fetchall()
-            
-            return [self._row_to_document(row) for row in rows]
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                return self._get_documents(chat_id, new_conn)
+        else:
+            return self._get_documents(chat_id, conn)
+
+
+    def _get_documents(self, chat_id: str, conn) -> List[DocumentInfo]:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM documents WHERE chat_id = ? ORDER BY uploaded_at DESC",
+            (chat_id,)
+        )
+        rows = cursor.fetchall()
+
+        return [self._row_to_document(row) for row in rows]
     
-    def get_document(self, document_id: str) -> Optional[DocumentInfo]:
+    def get_document(self, document_id: str, conn=None) -> Optional[DocumentInfo]:
         """Получить документ по ID"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM documents WHERE document_id = ?",
-                (document_id,)
-            )
-            row = cursor.fetchone()
-            
-            if not row:
-                return None
-            
-            return self._row_to_document(row)
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                return self._get_document(document_id, new_conn)
+        else:
+            return self._get_document(document_id, conn)
+
+
+    def _get_document(self, document_id: str, conn) -> Optional[DocumentInfo]:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM documents WHERE document_id = ?",
+            (document_id,)
+        )
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return self._row_to_document(row)
     
     def _row_to_document(self, row) -> DocumentInfo:
         """Конвертировать строку БД в DocumentInfo"""
@@ -311,21 +343,22 @@ class SQLiteRepository:
         )
     
     # ============== Работа с чатами ==============
-    
-    def create_chat(self, chat_id: str, title: Optional[str] = None) -> ChatInfo:
-        """Создать новый чат"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            
-            now = datetime.now().isoformat()
-            
-            cursor.execute("""
-                INSERT OR IGNORE INTO chats (chat_id, title, created_at, last_activity)
-                VALUES (?, ?, ?, ?)
-            """, (chat_id, title, now, now))
-            
-            # Получаем созданный чат
-            return self.get_chat(chat_id)
+    def create_chat(self, chat_id: str, conn=None, title=None):
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                self._create_chat(chat_id, new_conn, title)
+        else:
+            self._create_chat(chat_id, conn, title)
+
+
+    def _create_chat(self, chat_id, conn, title):
+        cursor = conn.cursor()
+        now = datetime.now().isoformat()
+
+        cursor.execute("""
+            INSERT OR IGNORE INTO chats (chat_id, title, created_at, last_activity)
+            VALUES (?, ?, ?, ?)
+        """, (chat_id, title, now, now))
     
     def get_chat(self, chat_id: str) -> Optional[ChatInfo]:
         """Получить информацию о чате"""
@@ -341,8 +374,8 @@ class SQLiteRepository:
                 return None
             
             # Получаем связанные данные
-            workflow = self.get_workflow(chat_id)
-            documents = self.get_documents(chat_id)
+            workflow = self.get_workflow(chat_id, conn)
+            documents = self.get_documents(chat_id, conn)
             
             return ChatInfo(
                 chat_id=row['chat_id'],
@@ -353,19 +386,23 @@ class SQLiteRepository:
                 documents=documents
             )
     
-    def update_chat_activity(self, chat_id: str):
-        """Обновить время последней активности"""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            
-            # Создаем чат если не существует
-            cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
-            if not cursor.fetchone():
-                self.create_chat(chat_id)
-            else:
-                cursor.execute("""
-                    UPDATE chats SET last_activity = ? WHERE chat_id = ?
-                """, (datetime.now().isoformat(), chat_id))
+    def update_chat_activity(self, chat_id: str, conn=None):
+        if conn is None:
+            with self.db.get_connection() as new_conn:
+                self._update_chat_activity(chat_id, new_conn)
+        else:
+            self._update_chat_activity(chat_id, conn)
+
+    def _update_chat_activity(self, chat_id: str, conn):
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT 1 FROM chats WHERE chat_id = ?", (chat_id,))
+        if not cursor.fetchone():
+            self.create_chat(chat_id, conn)
+        else:
+            cursor.execute("""
+                UPDATE chats SET last_activity = ? WHERE chat_id = ?
+            """, (datetime.now().isoformat(), chat_id))
     
     def list_chats(self) -> List[ChatInfo]:
         """Получить список всех чатов"""
@@ -418,6 +455,7 @@ class SQLiteRepository:
         
         Это новая функциональность - не было в InMemoryRepository.
         """
+        #print("save execution =======================")
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""

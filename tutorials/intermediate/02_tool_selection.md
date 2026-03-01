@@ -397,7 +397,7 @@ P(i) = exp(logit_i/T) / Σ exp(logit_j/T)
 
 ### Следующий шаг
 
-[Система обучения](04_training_system.md) - как улучшаются инструменты
+[Система обучения](/tutorials/advanced/01_custom_algorithms.md) - Собственные алгоритмы
 
 ---
 

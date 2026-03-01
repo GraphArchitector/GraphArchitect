@@ -151,7 +151,6 @@ class AgentTool(BaseTool):
                 Connector("text", "answer")
             ),
         }
-        
         # Получаем маппинг или используем универсальный question→answer
         return connector_mappings.get(
             agent.type,
