@@ -89,16 +89,12 @@ python main.py
 
 ```
 tutorials/
-├── README.md              # Обзор
-├── INDEX.md               # Полный индекс
 ├── START_HERE.md          # Этот файл
-├── TUTORIAL_GUIDE.md      # Руководство
-├── QUICK_REFERENCE.md     # Справочник
 │
 ├── beginner/              # 4 туториала (60 мин)
-├── intermediate/          # 5 туториалов (150 мин)
-├── advanced/              # 5 туториалов (200 мин)
-└── workflows/             # 4 сценария (150 мин)
+├── intermediate/          # 2 туториала (60 мин)
+├── deployment/            # 5 туториалов (75 мин)
+└── workflows/             # 4 сценария (105 мин)
 ```
 
 ---
@@ -113,15 +109,10 @@ tutorials/
 
 Выберите свой путь выше и начните обучение.
 
-### Вопросы?
-
-Смотрите [TUTORIAL_GUIDE.md](TUTORIAL_GUIDE.md) для помощи.
-
 ---
 
-**Общее время**: 575 минут (~10 часов материала)  
-**Уровней**: 3 (Beginner, Intermediate, Advanced)  
-**Workflows**: 6 готовых сценариев  
-**Примеров**: 50+
+**Общее время**: 300 минут (~5 часов материала)  
+**Уровней**: 3 (Beginner, Intermediate)  
+**Workflows**: 4 готовых сценария  
 
-**Готовы начать**: [README.md](/README.md) → [Quick Start](beginner/01_quick_start.md)
+**Готовы начать**: [Quick Start](beginner/01_quick_start.md)
