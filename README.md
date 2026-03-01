@@ -30,6 +30,7 @@
 
 ```bash
 cd src/GraphArchitectLib/Web
+pip install -r requirements.txt
 
 # Инициализация
 python db_manager.py init
@@ -159,14 +160,12 @@ GraphArchitect/
 
 - [Customer Support](tutorials/workflows/customer_support.md)
 - [Content Creation](tutorials/workflows/content_creation.md)
-- [Data Analysis](tutorials/workflows/data_analysis.md)
 - [Code Review](tutorials/workflows/code_review.md)
 
 ### Для production
 
-- [Embedding Systems](tutorials/advanced/01_embedding_systems.md)
+- [Embedding Systems](tutorials/deployment/01_embedding_systems.md)
 - [Production Deployment](tutorials/deployment/02_production_deployment.md)
-- [Performance Tuning](tutorials/advanced/02_performance_tuning.md)
 
 ---
 

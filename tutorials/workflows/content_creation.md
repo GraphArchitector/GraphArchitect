@@ -17,71 +17,13 @@
 
 ---
 
-## Архитектура Workflow
-
-```
-Тема статьи
-    ↓
-┌─────────────────────────────────┐
-│ Шаг 1: Research                 │
-│ - Поиск информации по теме      │
-│ - Анализ трендов                │
-│ - Сбор ключевых фактов          │
-│ Инструменты:                    │
-│   - Trend Analyzer              │
-│   - Web Scraper                 │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 2: Outlining                │
-│ - Создание структуры            │
-│ - Определение разделов          │
-│ - План аргументации             │
-│ Инструменты:                    │
-│   - Structured Outliner         │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 3: Writing                  │
-│ - Написание текста              │
-│ - Раскрытие каждого раздела     │
-│ - Добавление примеров           │
-│ Инструменты:                    │
-│   - Technical Writer            │
-│   - Creative Responder          │
-│   - Formal Responder            │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 4: Style Improvement        │
-│ - Проверка грамматики           │
-│ - Улучшение стиля               │
-│ - Оптимизация формулировок      │
-│ Инструменты:                    │
-│   - Style Checker               │
-│   - Style Improver              │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 5: Quality Assurance        │
-│ - Проверка фактов               │
-│ - Проверка структуры            │
-│ - Финальная валидация           │
-│ Инструменты:                    │
-│   - Strict QA                   │
-└────────────┬────────────────────┘
-             ↓
-Готовая статья
-```
-
----
-
 ## Реализация
 
 ### Простой вариант (3 шага)
 
 ```python
 import requests
+import json
 
 def create_article_simple(topic):
     """
@@ -118,6 +60,9 @@ print(article)
 ### Полный вариант (5 шагов)
 
 ```python
+import requests
+import json
+
 def create_article_full(topic, target_audience="general", tone="professional"):
     """
     Полный workflow с настройкой под аудиторию.
@@ -188,7 +133,31 @@ article = create_article_full(
     target_audience="medical_professionals",
     tone="technical"
 )
+print(article)
 ```
+
+### Генерация изображения
+```python
+import requests
+import json
+
+response = requests.post(
+    "http://localhost:8000/api/chat/analysis/message/stream",
+    data={
+        "message": f"Создай изображение планеты, и опиши какая плотность этой планеты исходя из фотографии.",
+        "planning_algorithm": "yen_5"
+    },
+    stream=True
+)
+
+for line in response.iter_lines():
+    if line:
+        import json
+        chunk = json.loads(line)
+        print(chunk)
+```
+
+В данном примере можно наблюдать шаги создания изображения. В ходе использования библиотеки, для данной задачи может потребоваться 2 и более шага.
 
 ---
 
@@ -246,9 +215,12 @@ print(f"Успешность: {stats['success_rate']:.1%}")
 
 ## Масштабирование
 
-### Batch обработка
+### Параллельное выполнение
 
 ```python
+import asyncio
+import aiohttp
+
 topics = [
     "AI в здравоохранении",
     "Blockchain технологии",
@@ -256,24 +228,6 @@ topics = [
     "IoT и умные города",
     "Кибербезопасность в 2026"
 ]
-
-articles = []
-for topic in topics:
-    article = create_article_simple(topic)
-    articles.append({
-        "topic": topic,
-        "content": article,
-        "created_at": datetime.now()
-    })
-    
-print(f"Создано статей: {len(articles)}")
-```
-
-### Параллельное выполнение
-
-```python
-import asyncio
-import aiohttp
 
 async def create_article_async(session, topic):
     async with session.post(
@@ -287,7 +241,7 @@ async def create_multiple_articles(topics):
         tasks = [create_article_async(session, topic) for topic in topics]
         return await asyncio.gather(*tasks)
 
-# Создать 10 статей параллельно
+# Создать 5 статей параллельно
 articles = asyncio.run(create_multiple_articles(topics))
 ```
 
@@ -319,4 +273,4 @@ articles = asyncio.run(create_multiple_articles(topics))
 
 ---
 
-**Следующий workflow**: [Анализ данных](data_analysis.md)
+**Следующий workflow**: [Анализ данных](code_review.md)

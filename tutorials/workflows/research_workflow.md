@@ -17,56 +17,6 @@
 
 ---
 
-## Архитектура Workflow
-
-```
-Исследовательский вопрос
-    ↓
-┌─────────────────────────────────┐
-│ Шаг 1: Information Gathering    │
-│ - Поиск релевантных источников  │
-│ - Извлечение ключевых фактов    │
-│ - Сбор статистики               │
-│ Инструменты:                    │
-│   - Web Scraper                 │
-│   - Trend Analyzer              │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 2: Analysis                 │
-│ - Анализ собранных данных       │
-│ - Выявление паттернов           │
-│ - Сравнительный анализ          │
-│ Инструменты:                    │
-│   - Trend Analyzer              │
-│   - GPT-4 Classifier            │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 3: Synthesis                │
-│ - Синтез информации             │
-│ - Формулирование выводов        │
-│ - Выявление противоречий        │
-│ Инструменты:                    │
-│   - Technical Writer            │
-│   - Formal Responder            │
-└────────────┬────────────────────┘
-             ↓
-┌─────────────────────────────────┐
-│ Шаг 4: Report Generation        │
-│ - Структурирование отчета       │
-│ - Добавление визуализаций       │
-│ - Форматирование                │
-│ Инструменты:                    │
-│   - Summary Reporter            │
-│   - Technical Writer            │
-└────────────┬────────────────────┘
-             ↓
-Исследовательский отчет
-```
-
----
-
 ## Реализация
 
 ### Базовое исследование
@@ -109,7 +59,8 @@ def research_topic(question):
         "executive_summary": "",
         "findings": "",
         "analysis": "",
-        "conclusions": ""
+        "conclusions": "",
+        "raw_text": ""
     }
     
     current_section = None
@@ -131,6 +82,7 @@ def research_topic(question):
                 elif "Conclusions" in content:
                     current_section = "conclusions"
                 
+                sections["raw_text"] += content
                 if current_section:
                     sections[current_section] += content
     
@@ -147,6 +99,9 @@ print(research['executive_summary'])
 
 print("\nKey Findings:")
 print(research['findings'])
+
+print("\nRaw Text:")
+print(research['raw_text'])
 ```
 
 ---
@@ -334,31 +289,6 @@ print(f"Overall research quality: {overall_score:.1%}")
 
 ---
 
-## Масштабирование
-
-### Batch исследования
-
-```python
-questions = [
-    "Тренды в AI/ML 2026",
-    "Blockchain в финтех",
-    "Квантовые вычисления",
-    "Edge computing",
-    "Web3 технологии"
-]
-
-reports = []
-for question in questions:
-    report = research_topic(question)
-    reports.append(report)
-    print(f"[OK] Completed: {question}")
-
-# Мета-анализ всех отчетов
-meta_analysis = analyze_multiple_reports(reports)
-```
-
----
-
 ## Итоги
 
 ### Вы создали
@@ -375,7 +305,3 @@ meta_analysis = analyze_multiple_reports(reports)
 - Анализ трендов
 - Due diligence
 - Конкурентный анализ
-
----
-
-**Следующий workflow**: [Document Processing](document_processing.md)

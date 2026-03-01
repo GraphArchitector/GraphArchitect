@@ -172,9 +172,15 @@ async def send_message_stream(
 
 @api_router.post("/chat/{chat_id}/message", response_model=MessageResponse)
 async def send_message(
+    #chat_id: str,
+    #message: str = Form(...),
+    #files: Optional[List[str]] = Form(None)
     chat_id: str,
     message: str = Form(...),
-    files: Optional[List[str]] = Form(None)
+    files: Optional[str] = Form(None),
+    planning_algorithm: str = Form("yen_5"),
+    use_rewoo: bool = Form(False),
+    user_priority: str = Form("balanced")
 ):
     """
     Отправить сообщение без стриминга
@@ -192,16 +198,22 @@ async def send_message(
     - Если цепочки нет, создается автоматически
     """
     try:
+        file_list = json.loads(files) if files else []
         request = MessageRequest(
             chat_id=chat_id,
             message=message,
-            files=files or []
+            files=file_list,
+            planning_algorithm=planning_algorithm,
+            use_streaming=use_streaming,
+            use_rewoo=use_rewoo,
+            user_priority=user_priority
         )
         
         response = await chat_service.process_message(request)
         return response
     
     except Exception as e:
+        print(f"Error processing message: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error processing message: {str(e)}"
@@ -242,6 +254,7 @@ async def upload_document(
         return document
     
     except Exception as e:
+        logger.exception("upload_document")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error uploading document: {str(e)}"

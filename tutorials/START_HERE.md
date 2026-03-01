@@ -36,6 +36,8 @@ python main.py
 
 Откройте: `http://localhost:8000`
 
+Вставьте ключ OpenRouter
+
 Отправьте: `"Классифицировать этот текст"`
 
 ---
@@ -57,10 +59,8 @@ python main.py
 **Выберите workflow**:
 - [Customer Support](workflows/customer_support.md) - Обработка запросов
 - [Content Creation](workflows/content_creation.md) - Создание контента
-- [Data Analysis](workflows/data_analysis.md) - Анализ данных
 - [Code Review](workflows/code_review.md) - Ревью кода
 - [Research](workflows/research_workflow.md) - Исследования
-- [Documents](workflows/document_processing.md) - Обработка документов
 
 **Время**: 20-30 минут на workflow  
 **Результат**: Готовое решение
@@ -70,7 +70,6 @@ python main.py
 **Изучите**:
 1. [Алгоритмы графа](intermediate/01_graph_algorithms.md) - 30 мин
 2. [Выбор инструментов](intermediate/02_tool_selection.md) - 30 мин
-3. [Система обучения](intermediate/04_training_system.md) - 30 мин
 
 **Время**: 90 минут  
 **Результат**: Глубокое понимание системы
@@ -80,7 +79,6 @@ python main.py
 **Изучите**:
 1. [Системы эмбеддингов](deployment/01_embedding_systems.md) - 45 мин
 2. [Production Deployment](deployment/02_production_deployment.md) - 50 мин
-3. [Performance Tuning](advanced/02_performance_tuning.md) - 35 мин
 
 **Время**: 130 минут  
 **Результат**: Production-ready система
@@ -97,10 +95,10 @@ tutorials/
 ├── TUTORIAL_GUIDE.md      # Руководство
 ├── QUICK_REFERENCE.md     # Справочник
 │
-├── beginner/              # 5 туториалов (75 мин)
+├── beginner/              # 4 туториала (60 мин)
 ├── intermediate/          # 5 туториалов (150 мин)
 ├── advanced/              # 5 туториалов (200 мин)
-└── workflows/             # 6 сценариев (150 мин)
+└── workflows/             # 4 сценария (150 мин)
 ```
 
 ---
@@ -126,4 +124,4 @@ tutorials/
 **Workflows**: 6 готовых сценариев  
 **Примеров**: 50+
 
-**Готовы начать**: [README.md](README.md) → [Quick Start](beginner/01_quick_start.md)
+**Готовы начать**: [README.md](/README.md) → [Quick Start](beginner/01_quick_start.md)

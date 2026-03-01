@@ -11,6 +11,15 @@ Tables:
 - tool_metrics - tool metrics
 """
 
+import sys
+import logging
+from pathlib import Path
+
+# Add path to grapharchitect
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+import copy
 import sqlite3
 import json
 import logging
@@ -18,6 +27,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 from pathlib import Path
 from contextlib import contextmanager
+
 
 logger = logging.getLogger(__name__)
 
@@ -239,6 +249,37 @@ class Database:
                 logger.info(f"Added {inserted} new tools (total: {total})")
             else:
                 logger.info(f"Database has {total} tools, all up to date")
+            
+    def _get_expanded_agents(self, agents):
+        """
+        Для каждого агента создаёт копии со всеми возможными типами коннекторов,
+        кроме тех, что связаны с обработкой изображений.
+        """
+
+        # Типы коннекторов, которые нужно исключить
+        excluded_types = {
+            "image_generation",
+            "image_processing", 
+            "text_extraction"  
+        }
+        
+        expanded_agents = []
+        
+        for agent in agents:
+            for conn_type, _ in connector_mappings.items():
+                if conn_type == agent.type:
+                    expanded_agents.append(agent)
+                    continue
+                if conn_type in excluded_types:
+                    continue
+                new_agent = copy.deepcopy(agent)
+                new_agent.id = f"{agent.id}-{conn_type}"
+                new_agent.type = conn_type
+                #new_agent.connectors = connectors
+                new_agent.name = f"{agent.name} [{conn_type}]"
+                expanded_agents.append(new_agent)
+                
+        return expanded_agents
     
     def _get_default_agents(self):
         """Получить список дефолтных агентов для первоначальной загрузки."""
