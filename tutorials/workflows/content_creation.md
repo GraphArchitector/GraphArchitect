@@ -273,4 +273,4 @@ articles = asyncio.run(create_multiple_articles(topics))
 
 ---
 
-**Следующий workflow**: [Анализ данных](code_review.md)
+**Следующий workflow**: [Автоматическое ревью кода](code_review.md)
