@@ -218,6 +218,25 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 - LangChain (для интеграции)
 - Docker (для deployment)
 
+### Системные требования
+
+#### Минимальные
+
+- ОС: Linux, Windows или macOS x86_64/ARM64
+- Python 3.9+
+- RAM: > 4 GB
+- CPU: > 2 ядер (Intel N150)
+- Диск: > 2 GB
+
+#### Рекомендуемые
+
+- ОС: Linux Ubuntu 22.04+ или Debian 12+
+- Python 3.9+
+- RAM: 8-16 GB (Web API, FAISS и NLI k-NN)
+- CPU: 4+ ядра (модель зависит от выбранной инфраструктуры)
+- Диск: 20+ GB (объем зависит от моделей - huggingface, инфрастуктуры)
+
+
 ---
 
 ## Установка
