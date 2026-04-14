@@ -111,11 +111,14 @@ async def home(request: Request):
         for agent in agents[:5]
     ]
     
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "agents": agents_list,
-        "templates": templates_list
-    })
+    return templates.TemplateResponse(
+        name="index.html",
+        context={
+            "agents": agents_list,
+            "templates": templates_list
+        },
+        request=request
+    )
 
 
 @app.post("/api/set-api-key")
