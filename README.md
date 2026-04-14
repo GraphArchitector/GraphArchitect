@@ -95,9 +95,7 @@ GraphArchitect/
 
 ### Выбор инструментов
 
-2 метода:
 - **Simple**: Базовый (логиты + softmax)
-- **Advanced**: С формулой R(x) (качество + стоимость + время)
 
 ### Natural Language Interface
 

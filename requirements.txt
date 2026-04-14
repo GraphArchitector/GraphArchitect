@@ -20,26 +20,8 @@ dataclasses-json>=0.5.7
 # openai>=1.0.0                  # OpenAI Embeddings API
 
 # NLP
-# transformers>=4.30.0
-# torch>=2.0.0
-
-# Векторные БД (опционально)
-# faiss-cpu>=1.7.4
-# chromadb>=0.3.0
-
-# Веб API (опционально)
-# fastapi>=0.100.0
-# uvicorn>=0.23.0
-
-# Визуализация (опционально)
-# matplotlib>=3.5.0
-# networkx>=2.8.0
-
-# Тестирование и разработка
-# pytest>=7.0.0
-# pytest-cov>=4.0.0
-# black>=22.0.0
-# mypy>=1.0.0
+transformers>=4.30.0
+torch>=2.0.0
 
 pytest~=9.0.0
 requests~=2.31.0
