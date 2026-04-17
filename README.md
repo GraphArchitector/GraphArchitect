@@ -62,9 +62,9 @@ GraphArchitect/
 │   │   ├── api_router.py       # 16 endpoints
 │   │   └── grapharchitect_bridge.py
 │   │
-│   └── Tests/                  
+│   └── Tests/
 │
-├── tutorials/                  
+├── tutorials/
 │   ├── beginner/               # 4 туториала
 │   ├── intermediate/           # 2 туториала
 │   ├── deployment/             # 2 туториала
@@ -111,6 +111,23 @@ GraphArchitect/
 
 ---
 
+## Направления прикладного использования
+
+1. Взаимодействие внутри отделов
+Система способна маршрутизировать запрос в профильный отдел компании
+2. Обучение
+Система способна составить план обучения и выявить смежные области знаний, что расширит контекст исходных материалов.
+3. Исследования
+Система способна сформировать исследовательский отчёт с подтверждением выводов источников.
+4. Нормативно-правовой анализ
+Система способна использовать необходимые отрасли права и найти релевантную систему для повышения точности ответа.
+5. Логистика
+Система способна составить оптимальный маршрут с учётом параметров груза, географических ограничений, и прочих параметров.
+6. Генерация контента
+Система способна создать контент в разных форматах в соответствии с заданными потребностями, стилем и ограничениями пользователя.
+
+---
+
 ## Интеграции
 
 ### LangChain
@@ -130,8 +147,8 @@ GraphArchitect/
 
 ### Эмбеддеры (NLI (k-NN)/Выбор инструментов)
 
-- [FractalGPT/E5SmallDistilV2](https://huggingface.co/FractalGPT/E5SmallDistilV2) — модель обученная на задаче NLI на базе E5Small, (100 млн параметров) 
-- [FractalGPT/SbertDistilV2](https://huggingface.co/FractalGPT/SbertDistilV2) — модель обученная на задаче NLI на базе [FractalGPT/SbertDistil](https://huggingface.co/FractalGPT/SbertDistil), (11.8 млн параметров) 
+- [FractalGPT/E5SmallDistilV2](https://huggingface.co/FractalGPT/E5SmallDistilV2) — модель обученная на задаче NLI на базе E5Small, (100 млн параметров)
+- [FractalGPT/SbertDistilV2](https://huggingface.co/FractalGPT/SbertDistilV2) — модель обученная на задаче NLI на базе [FractalGPT/SbertDistil](https://huggingface.co/FractalGPT/SbertDistil), (11.8 млн параметров)
 
 ### LLM для NLI
 - [Ponimash/Qwen2.5-nli-7b](https://huggingface.co/Ponimash/Qwen2.5-nli-7b) — модель на базе [Qwen/Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) для преобразования задач на естественном языке в язык MASL.   [Пример на Colab](https://colab.research.google.com/drive/1RI3d0W-KxlSfoXI2yjm-jMA5PnuSFulV)
