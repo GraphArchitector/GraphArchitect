@@ -421,9 +421,9 @@ class RLAIFTrainer:
                 'overall': score.overall_score
             },
             success=score.overall_score >= self._config.min_score_threshold,
-            timestamp=score.timestamp,
-            critic_model=score.model_used,
-            evaluation_id=score.evaluation_id
+            #timestamp=score.timestamp,
+            #critic_model=score.model_used,
+            #evaluation_id=score.evaluation_id
         )
         
         return feedback
