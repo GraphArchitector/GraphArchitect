@@ -229,6 +229,33 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 - faiss-cpu (для скорости)
 - Infinity server с моделями intfloat/multilingual-e5-large-instruct или FractalGPT/E5SmallDistilV2. (Самая быстрая модель FractalGPT/SbertDistilV2)
 
+### Запуск на локальном устройстве
+
+В некоторых блокнотах, например пример [`examples/Jupyter/01_test_api_tools.ipynb`](https://github.com/GraphArchitector/GraphArchitect/blob/main/examples/Jupyter/01_test_api_tools.ipynb) есть опция запустить модель на своём устройстве.
+
+Рекомендуется поднимать vLLM на отдельном устройстве или сервере с GPU:
+
+- GPU: NVIDIA, не менее 24 GB VRAM для `Qwen/Qwen2.5-7B-Instruct`
+- RAM: от 32 GB
+- CPU: 8+ ядер
+- Disk: от 50 GB свободного места под модель, кэш Hugging Face и окружение
+- OS: Linux, предпочтительно Ubuntu 22.04+ / Debian 12+
+- CUDA-драйверы и окружение, совместимые с vLLM
+
+При запуске Web/API, Infinity и vLLM на одной машине возможны конфликты портов и нехватка ресурсов. Поэтому рекомендуемая схема:
+
+- GraphArchitect Web/API: основная машина, `http://localhost:8000`
+- Infinity embeddings: локально или отдельно, `http://localhost:7997`
+- vLLM: отдельный GPU-сервер, например `http://<gpu-host>:8001/v1/chat/completions`
+
+Для подключения GraphArchitect к удаленному vLLM-серверу достаточно указать:
+
+```env
+NLI_TYPE=llm
+NLI_LLM_BACKEND=vllm
+NLI_LLM_MODEL=Qwen/Qwen2.5-7B-Instruct
+VLLM_HOST=http://<gpu-host>:8001/v1/chat/completions
+
 ### Опциональные
 
 - Transformers (для NLI)
