@@ -122,6 +122,9 @@ class OpenRouterLLM:
             response.raise_for_status()
             
             data = response.json()
+            used_model = data.get("model")
+            if used_model:
+                logger.info("OpenRouter model: requested=%s, used=%s", self.model_name, used_model)
             
             # Извлекаем ответ
             content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
@@ -200,6 +203,9 @@ class OpenRouterLLM:
             response.raise_for_status()
             
             data = response.json()
+            used_model = data.get("model")
+            if used_model:
+                logger.info("OpenRouter model: requested=%s, used=%s", self.model_name, used_model)
             content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
             
             return content or "Empty response"

@@ -216,6 +216,26 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 
 ---
 
+### Использование бесплатных моделей OpenRouter
+
+GraphArchitect поддерживает OpenRouter через переменные окружения. Для апробации без платных моделей можно использовать бесплатные модели OpenRouter из коллекции [Free Models](https://openrouter.ai/collections/free-models).
+
+OpenRouter поддерживает два варианта:
+
+- `openrouter/free` - роутер, который автоматически выбирает доступную бесплатную модель
+- конкретная модель с суффиксом `:free`, например `openai/gpt-oss-20b:free`
+
+Пример конфигурации для Web/API:
+
+```env
+OPENROUTER_API_KEY=<your-openrouter-api-key>
+
+NLI_TYPE=llm
+NLI_LLM_BACKEND=openrouter
+NLI_LLM_MODEL=openrouter/free
+# Или с явно выбранной моделью
+NLI_LLM_MODEL=openai/gpt-oss-20b:free
+
 ## Требования
 
 ### Минимальные
@@ -279,8 +299,6 @@ VLLM_HOST=http://<gpu-host>:8001/v1/chat/completions
 - RAM: 8-16 GB (Web API, FAISS и NLI k-NN)
 - CPU: 4+ ядра (модель зависит от выбранной инфраструктуры)
 - Диск: 20+ GB (объем зависит от моделей - huggingface, инфрастуктуры)
-
-
 ---
 
 ## Установка
