@@ -230,11 +230,39 @@ OpenRouter поддерживает два варианта:
 ```env
 OPENROUTER_API_KEY=<your-openrouter-api-key>
 
+OPENROUTER_MODEL=openrouter/free
+OPENROUTER_IMAGE_MODEL=google/gemini-2.5-flash-image
+
 NLI_TYPE=llm
 NLI_LLM_BACKEND=openrouter
 NLI_LLM_MODEL=openrouter/free
-# Или с явно выбранной моделью
-NLI_LLM_MODEL=openai/gpt-oss-20b:free
+```
+
+Логика выбора модели в Web/API:
+
+- `OPENROUTER_MODEL=openrouter/free` - используется бесплатный роутер OpenRouter
+- `OPENROUTER_MODEL=<model-id>:free` - используется конкретная бесплатная модель
+- если `OPENROUTER_MODEL` не указывает на free-модель, выбор моделей для агентов выполняется логикой библиотеки
+
+Для NLI можно отдельно переопределить модель через `NLI_LLM_MODEL`. Если `NLI_LLM_MODEL` не задана, используется значение `OPENROUTER_MODEL`.
+
+Для генерации изображений используется отдельная переменная `OPENROUTER_IMAGE_MODEL`. Бесплатные текстовые модели OpenRouter не гарантируют поддержку image output, поэтому текстовую модель и image-модель нужно выбирать отдельно перед запуском. Перед использованием image-модели проверьте ее доступность, стоимость и поддержку image output в OpenRouter.
+
+Минимальный пример `.env` для проверки бесплатных текстовых моделей:
+
+```env
+OPENROUTER_API_KEY=<your-openrouter-api-key>
+OPENROUTER_MODEL=openrouter/free
+NLI_TYPE=llm
+NLI_LLM_BACKEND=openrouter
+NLI_LLM_MODEL=openrouter/free
+```
+
+Если нужно проверить генерацию изображений, дополнительно задайте image-capable модель:
+
+```env
+OPENROUTER_IMAGE_MODEL=google/gemini-2.5-flash-image
+```
 
 ## Требования
 

@@ -173,6 +173,7 @@ class AgentTool(BaseTool):
                 return self._execute_image_generation(input_data, api_key)
             
             try:
+                import config
                 from grapharchitect.tools.ApiTools.OpenRouterTool.openrouter_llm import OpenRouterLLM
                 
                 # Системный промпт: роль инструмента
@@ -216,6 +217,9 @@ class AgentTool(BaseTool):
                     self._agent.type,
                     ("google/gemini-2.5-flash", 0.80)
                 )
+                configured_model = config.OPENROUTER_MODEL.lower()
+                if configured_model == "openrouter/free" or ":free" in configured_model:
+                    model_name = config.OPENROUTER_MODEL
                 
                 # Обновляем репутацию агента под модель
                 self.metadata.reputation = target_rep
@@ -255,12 +259,13 @@ class AgentTool(BaseTool):
         Формат ответа: message.images[].image_url.url (base64 data URL).
         """
         import requests
+        import config
         
         user_input = str(input_data).strip()
         
         # Модели с поддержкой image output
         image_models = [
-            {"model": "google/gemini-2.5-flash-image", "modalities": ["image", "text"]},
+            {"model": config.OPENROUTER_IMAGE_MODEL, "modalities": ["image", "text"]},
         ]
         
         headers = {
@@ -321,11 +326,12 @@ class AgentTool(BaseTool):
         
         # Fallback: текстовое описание
         try:
+            import config
             from grapharchitect.tools.ApiTools.OpenRouterTool.openrouter_llm import OpenRouterLLM
             
             llm = OpenRouterLLM(
                 api_key=api_key,
-                model_name="openai/gpt-3.5-turbo",
+                model_name=config.OPENROUTER_MODEL,  # openai/gpt-3.5-turbo
                 system_prompt=(
                     "Ты художник. Подробно опиши изображение по запросу: "
                     "композицию, цвета, объекты, стиль. Отвечай на русском."
@@ -479,12 +485,13 @@ class GraphArchitectBridge:
         # Попытка создать LLM NLI (если есть ключ OpenRouter)
         if api_key:
             try:
+                import config
                 from grapharchitect.services.nli.llm_nli_service import LLMNLIService
                 
                 llm_nli = LLMNLIService(
                     embedding_service=self.embedding_service,
                     backend="openrouter",
-                    model_name="openai/gpt-3.5-turbo",
+                    model_name=config.NLI_LLM_MODEL,  # openai/gpt-3.5-turbo
                     api_key=api_key,
                     k_similar=3,
                     temperature=0.1
@@ -1526,6 +1533,7 @@ class GraphArchitectBridge:
         
         if os.getenv("OPENROUTER_API_KEY") and len(str(current_data)) < 50000:
             try:
+                import config
                 from grapharchitect.services.rlaif.llm_critic import LLMCritic
                 
                 yield MessageChunk(
@@ -1544,7 +1552,7 @@ class GraphArchitectBridge:
                 
                 critic_llm = LLMCritic(
                     backend="openrouter",
-                    model_name="openai/gpt-3.5-turbo",
+                    model_name=config.OPENROUTER_MODEL,  # openai/gpt-3.5-turbo
                     temperature=0.2,
                     detailed_evaluation=False  # Упрощенная оценка
                 )
