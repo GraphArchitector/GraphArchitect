@@ -58,8 +58,9 @@ GraphArchitect/
 │   │   └── protocols/           # A2A, MCP
 │   │
 │   ├── Web/                     # Web API
-│   │   ├── main.py             # FastAPI app
-│   │   ├── api_router.py       # 16 endpoints
+│   │   ├── main.py              # FastAPI app
+│   │   ├── api_router.py        # 16 endpoints
+│   │   ├── requirements.txt     # библиотеки для запуска WebApi
 │   │   └── grapharchitect_bridge.py
 │   │
 │   └── Tests/
@@ -78,6 +79,8 @@ GraphArchitect/
        ├── nli/                # NLI примеры
        ├── advanced/           # Продвинутые
        └── protocols/          # A2A/MCP
+│
+└── requirements.txt           # Общие требования (требуется также установить src/Web/requirements.txt)
 
 ```
 
@@ -153,6 +156,8 @@ GraphArchitect/
 ### LLM для NLI
 - [Ponimash/Qwen2.5-nli-7b](https://huggingface.co/Ponimash/Qwen2.5-nli-7b) — модель на базе [Qwen/Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct) для преобразования задач на естественном языке в язык MASL.   [Пример на Colab](https://colab.research.google.com/drive/1RI3d0W-KxlSfoXI2yjm-jMA5PnuSFulV)
 
+LLM можно подключать не только через внешние API, но и локально: параметры модели и endpoint передаются в библиотеку через переменные среды. Для локального inference рекомендуется vLLM как OpenAI-compatible сервер.
+
 ### NLI Датасет
 - [Ponimash/nli_dataset](https://huggingface.co/datasets/Ponimash/nli_dataset) — датасет перевода задач (9 999 примеров)
 ---
@@ -212,11 +217,54 @@ SELECTOR_TYPE=advanced
 
 NLI_TYPE=qwen
 QWEN_MODEL_PATH=/path/to/qwen-nli-7b
+
+# Локальная LLM через vLLM (альтернатива NLI_TYPE=qwen)
+NLI_TYPE=llm
+NLI_LLM_BACKEND=vllm
+NLI_LLM_MODEL=Qwen/Qwen2.5-7B-Instruct
+VLLM_HOST=http://localhost:8001/v1/chat/completions
 ```
 
 ---
 
+### Использование бесплатных моделей OpenRouter
+
+GraphArchitect поддерживает OpenRouter через переменные окружения. Для апробации без платных моделей можно использовать бесплатные модели OpenRouter из коллекции [Free Models](https://openrouter.ai/collections/free-models).
+
+OpenRouter поддерживает два варианта:
+
+- `openrouter/free` - роутер, который автоматически выбирает доступную бесплатную модель
+- конкретная модель с суффиксом `:free`, например `openai/gpt-oss-20b:free`
+
+Логика выбора модели в Web/API:
+
+- `OPENROUTER_MODEL=openrouter/free` - используется бесплатный роутер OpenRouter
+- `OPENROUTER_MODEL=<model-id>:free` - используется конкретная бесплатная модель
+- если `OPENROUTER_MODEL` не указывает на free-модель, выбор моделей для агентов выполняется логикой библиотеки (рекомендуется)
+
+Для NLI можно отдельно переопределить модель через `NLI_LLM_MODEL`. Если `NLI_LLM_MODEL` не задана, используется значение `OPENROUTER_MODEL`.
+
+Для генерации изображений используется отдельная переменная `OPENROUTER_IMAGE_MODEL`. Бесплатные текстовые модели OpenRouter не гарантируют поддержку image output, поэтому текстовую модель и image-модель нужно выбирать отдельно перед запуском. Перед использованием image-модели проверьте ее доступность, стоимость и поддержку image output в OpenRouter.
+
+Минимальный пример `.env` для проверки бесплатных текстовых моделей:
+
+```env
+OPENROUTER_API_KEY=<your-openrouter-api-key>
+OPENROUTER_MODEL=openrouter/free
+NLI_TYPE=llm
+NLI_LLM_BACKEND=openrouter
+NLI_LLM_MODEL=openrouter/free
+```
+
+Если нужно проверить генерацию изображений, дополнительно задайте image модель:
+
+```env
+OPENROUTER_IMAGE_MODEL=google/gemini-2.5-flash-image
+```
+
 ## Требования
+
+Ниже представлены требования к python
 
 ### Минимальные
 
@@ -237,6 +285,9 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 
 ### Системные требования
 
+Следующие требования указаны для использования библиотеки с помощью API (например: OpenRouter, ...).
+Для использования локальных моделей, используйте секцию `Запуск на локальном устройстве`
+
 #### Минимальные
 
 - ОС: Linux, Windows или macOS x86_64/ARM64
@@ -253,6 +304,33 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 - CPU: 4+ ядра (модель зависит от выбранной инфраструктуры)
 - Диск: 20+ GB (объем зависит от моделей - huggingface, инфрастуктуры)
 
+### Запуск на локальном устройстве
+
+В некоторых блокнотах, например [`examples/Jupyter/01_test_api_tools.ipynb`](https://github.com/GraphArchitector/GraphArchitect/blob/main/examples/Jupyter/01_test_api_tools.ipynb) есть опция запустить модель на своём устройстве (или на удалённом сервере).
+
+Рекомендуется поднимать vLLM на отдельном устройстве или сервере с GPU:
+
+- GPU: NVIDIA, не менее 24 GB VRAM для `Qwen/Qwen2.5-7B-Instruct`
+- RAM: от 32 GB
+- CPU: 8+ ядер
+- Disk: от 50 GB свободного места под модель, кэш Hugging Face и окружение
+- OS: Linux, предпочтительно Ubuntu 22.04+ / Debian 12+
+- CUDA-драйверы и окружение, совместимые с vLLM
+
+При запуске Web/API, Infinity и vLLM на одной машине возможны конфликты портов и нехватка ресурсов. Поэтому рекомендуемая схема:
+
+- GraphArchitect Web/API: основная машина, `http://localhost:8000`
+- Infinity embeddings: локально или отдельно, `http://localhost:7997`
+- vLLM: отдельный GPU-сервер, например `http://<gpu-host>:8001/v1/chat/completions`
+
+Для подключения GraphArchitect к удаленному vLLM-серверу достаточно указать:
+
+```env
+NLI_TYPE=llm
+NLI_LLM_BACKEND=vllm
+NLI_LLM_MODEL=Qwen/Qwen2.5-7B-Instruct
+VLLM_HOST=http://<gpu-host>:8001/v1/chat/completions
+```
 
 ---
 
@@ -262,9 +340,12 @@ QWEN_MODEL_PATH=/path/to/qwen-nli-7b
 # Клонирование
 git clone <repo-url>
 cd GraphArchitect
+# Установка общих требований
+pip install -r requirements.txt
 
 # Зависимости
 cd src/GraphArchitectLib/Web
+# Требования для webApi
 pip install -r requirements.txt
 
 # Инициализация
