@@ -236,18 +236,6 @@ OpenRouter поддерживает два варианта:
 - `openrouter/free` - роутер, который автоматически выбирает доступную бесплатную модель
 - конкретная модель с суффиксом `:free`, например `openai/gpt-oss-20b:free`
 
-Пример конфигурации для Web/API:
-
-```env
-OPENROUTER_API_KEY=<your-openrouter-api-key>
-
-OPENROUTER_MODEL=openrouter/free
-
-NLI_TYPE=llm
-NLI_LLM_BACKEND=openrouter
-NLI_LLM_MODEL=openrouter/free
-```
-
 Логика выбора модели в Web/API:
 
 - `OPENROUTER_MODEL=openrouter/free` - используется бесплатный роутер OpenRouter
@@ -268,7 +256,7 @@ NLI_LLM_BACKEND=openrouter
 NLI_LLM_MODEL=openrouter/free
 ```
 
-Если нужно проверить генерацию изображений, дополнительно задайте image-capable модель:
+Если нужно проверить генерацию изображений, дополнительно задайте image модель:
 
 ```env
 OPENROUTER_IMAGE_MODEL=google/gemini-2.5-flash-image
